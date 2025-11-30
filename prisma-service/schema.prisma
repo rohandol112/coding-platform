@@ -28,6 +28,7 @@ model User {
   // Relations
   submissions   Submission[]
   contests      UserContest[]
+  sessions      Session[]
 
   @@index([email])
   @@index([username])
@@ -55,6 +56,7 @@ model Problem {
   // Relations
   submissions   Submission[]
   testCases     TestCase[]
+  contests      ContestProblem[]
 
   @@index([slug])
   @@index([difficulty])

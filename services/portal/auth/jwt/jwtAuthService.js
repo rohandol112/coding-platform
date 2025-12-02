@@ -102,6 +102,11 @@ export const login = async (credentials) => {
     throw new Error('Account is deactivated');
   }
 
+  // Check if user has password (not OAuth user)
+  if (!user.passwordHash) {
+    throw new Error('Please use Google or Phone login for this account');
+  }
+
   // Verify password
   const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
 

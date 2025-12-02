@@ -32,7 +32,8 @@ export const register = async (userData) => {
       passwordHash: hashedPassword,
       firstName,
       lastName,
-      role: role || 'USER'
+      role: role || 'USER',
+      provider: 'LOCAL'
     }
   });
 
@@ -72,12 +73,23 @@ export const login = async (credentials) => {
     throw new Error(authMessages.invalidCredentials);
   }
 
+  // Check if user has password (not OAuth user)
+  if (!user.passwordHash) {
+    throw new Error('Please use Google login for this account');
+  }
+
   // Verify password
   const isPasswordValid = await bcrypt.compare(password, user.passwordHash);
 
   if (!isPasswordValid) {
     throw new Error(authMessages.invalidCredentials);
   }
+
+  // Update last login
+  await prisma.user.update({
+    where: { id: user.id },
+    data: { lastLoginAt: new Date() }
+  });
 
   // Generate token
   const token = generateToken({

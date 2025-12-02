@@ -4,6 +4,9 @@ import dotenv from 'dotenv';
 import { PrismaClient } from '@prisma/client';
 import dashboardJwtAuthRoutes from './routes/dashboard/auth/jwt/jwtAuthRoutes.js';
 import portalJwtAuthRoutes from './routes/portal/auth/jwt/jwtAuthRoutes.js';
+import dashboardGoogleAuthRoutes from './routes/dashboard/auth/google/googleAuthRoutes.js';
+import portalGoogleAuthRoutes from './routes/portal/auth/google/googleAuthRoutes.js';
+import portalPhoneAuthRoutes from './routes/portal/auth/phone/phoneAuthRoutes.js';
 import { serverMessages } from './constant/messages.js';
 
 dotenv.config();
@@ -30,9 +33,12 @@ app.get('/health', (req, res) => {
 
 // API Routes - Dashboard (Admin)
 app.use('/api/dashboard/auth/jwt', dashboardJwtAuthRoutes);
+app.use('/api/dashboard/auth/google', dashboardGoogleAuthRoutes);
 
 // API Routes - Portal (User)
 app.use('/api/portal/auth/jwt', portalJwtAuthRoutes);
+app.use('/api/portal/auth/google', portalGoogleAuthRoutes);
+app.use('/api/portal/auth/phone', portalPhoneAuthRoutes);
 
 // 404 handler
 app.use((req, res) => {

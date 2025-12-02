@@ -3,86 +3,91 @@
  */
 
 // Contest Status
-const CONTEST_STATUS = {
-  DRAFT: 'DRAFT',
-  SCHEDULED: 'SCHEDULED',
-  RUNNING: 'RUNNING',
-  ENDED: 'ENDED',
-  CANCELLED: 'CANCELLED',
+const contestStatus = {
+  draft: 'DRAFT',
+  scheduled: 'SCHEDULED',
+  running: 'RUNNING',
+  ended: 'ENDED',
+  cancelled: 'CANCELLED',
 };
 
-// Contest Types
-const CONTEST_TYPE = {
-  PUBLIC: 'PUBLIC',
-  PRIVATE: 'PRIVATE',
-  COLLEGE: 'COLLEGE',
+// Contest Type
+const contestType = {
+  public: 'PUBLIC',
+  private: 'PRIVATE',
+  college: 'COLLEGE',
 };
 
 // Contest Limits
-const CONTEST_LIMITS = {
-  TITLE_MAX_LENGTH: 200,
-  DESCRIPTION_MAX_LENGTH: 5000,
-  RULES_MAX_LENGTH: 2000,
-  PRIZES_MAX_LENGTH: 2000,
-  MAX_PROBLEMS: 50,
-  MAX_PARTICIPANTS: 10000,
-  MIN_DURATION: 60, // minutes
-  MAX_DURATION: 604800, // 7 days in minutes
+const contestLimits = {
+  titleMaxLength: 200,
+  descriptionMaxLength: 5000,
+  rulesMaxLength: 2000,
+  prizesMaxLength: 2000,
+  maxProblems: 50,
+  maxParticipants: 10000,
+  minDuration: 60, // minutes
+  maxDuration: 604800, // 7 days in minutes
 };
 
 // Contest Messages
-const CONTEST_MESSAGES = {
+const contestMessages = {
   // Success
-  CREATED: 'Contest created successfully',
-  UPDATED: 'Contest updated successfully',
-  DELETED: 'Contest deleted successfully',
-  PUBLISHED: 'Contest published successfully',
-  STARTED: 'Contest started successfully',
-  ENDED: 'Contest ended successfully',
-  CANCELLED: 'Contest cancelled successfully',
-  REGISTERED: 'Successfully registered for contest',
-  UNREGISTERED: 'Successfully unregistered from contest',
-  PROBLEM_ADDED: 'Problem added to contest successfully',
-  PROBLEM_REMOVED: 'Problem removed from contest successfully',
-  PROBLEM_UPDATED: 'Contest problem updated successfully',
+  created: 'Contest created successfully',
+  updated: 'Contest updated successfully',
+  deleted: 'Contest deleted successfully',
+  published: 'Contest published successfully',
+  started: 'Contest started successfully',
+  ended: 'Contest ended successfully',
+  cancelled: 'Contest cancelled successfully',
+  registered: 'Successfully registered for contest',
+  unregistered: 'Successfully unregistered from contest',
+  problemAdded: 'Problem added to contest successfully',
+  problemRemoved: 'Problem removed from contest successfully',
+  problemUpdated: 'Contest problem updated successfully',
   
   // Errors
-  NOT_FOUND: 'Contest not found',
-  ALREADY_EXISTS: 'Contest with this slug already exists',
-  ALREADY_STARTED: 'Contest has already started',
-  NOT_STARTED: 'Contest has not started yet',
-  ALREADY_ENDED: 'Contest has ended',
-  IS_FULL: 'Contest has reached maximum participants',
-  REGISTRATION_CLOSED: 'Registration deadline has passed',
-  ALREADY_REGISTERED: 'Already registered for this contest',
-  NOT_REGISTERED: 'Not registered for this contest',
-  CANNOT_DELETE_STARTED: 'Cannot delete a contest that has started',
-  CANNOT_MODIFY_STARTED: 'Cannot modify contest after it has started',
-  PROBLEM_NOT_IN_CONTEST: 'Problem is not part of this contest',
-  PROBLEM_ALREADY_IN_CONTEST: 'Problem already added to this contest',
+  notFound: 'Contest not found',
+  alreadyExists: 'Contest with this slug already exists',
+  alreadyStarted: 'Contest has already started',
+  notStarted: 'Contest has not started yet',
+  alreadyEnded: 'Contest has ended',
+  isFull: 'Contest has reached maximum participants',
+  registrationClosed: 'Registration deadline has passed',
+  alreadyRegistered: 'Already registered for this contest',
+  notRegistered: 'Not registered for this contest',
+  cannotDeleteStarted: 'Cannot delete a contest that has started',
+  cannotModifyStarted: 'Cannot modify contest after it has started',
+  problemNotInContest: 'Problem is not part of this contest',
+  problemAlreadyInContest: 'Problem already added to this contest',
   
   // Validation
-  INVALID_STATUS: 'Invalid contest status',
-  INVALID_TYPE: 'Invalid contest type',
-  INVALID_TIME_RANGE: 'End time must be after start time',
-  INVALID_DURATION: 'Contest duration is invalid',
-  INVALID_REGISTRATION_DEADLINE: 'Registration deadline must be before start time',
-  TITLE_REQUIRED: 'Contest title is required',
-  DESCRIPTION_REQUIRED: 'Contest description is required',
-  START_TIME_REQUIRED: 'Start time is required',
-  END_TIME_REQUIRED: 'End time is required',
-  DURATION_REQUIRED: 'Duration is required',
-  NO_PROBLEMS: 'Contest must have at least one problem',
+  invalidStatus: 'Invalid contest status',
+  invalidType: 'Invalid contest type',
+  invalidTimeRange: 'End time must be after start time',
+  invalidDuration: 'Contest duration is invalid',
+  invalidRegistrationDeadline: 'Registration deadline must be before start time',
+  titleRequired: 'Contest title is required',
+  descriptionRequired: 'Contest description is required',
+  startTimeRequired: 'Start time is required',
+  endTimeRequired: 'End time is required',
+  durationRequired: 'Duration is required',
+  noProblems: 'Contest must have at least one problem',
   
   // Authorization
-  UNAUTHORIZED: 'Not authorized to access this contest',
-  ADMIN_ONLY: 'Only administrators can perform this action',
-  CREATOR_ONLY: 'Only contest creator can perform this action',
+  unauthorized: 'Not authorized to access this contest',
+  adminOnly: 'Only administrators can perform this action',
+  creatorOnly: 'Only contest creator can perform this action',
+  
+  // Service Errors
+  fetchContestsFailed: 'Failed to get contests',
+  fetchParticipantsFailed: 'Failed to get participants',
+  fetchLeaderboardFailed: 'Failed to get leaderboard',
 };
 
 module.exports = {
-  CONTEST_STATUS,
-  CONTEST_TYPE,
-  CONTEST_LIMITS,
-  CONTEST_MESSAGES,
+  contestStatus,
+  contestType,
+  contestLimits,
+  contestMessages,
 };

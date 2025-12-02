@@ -3,7 +3,6 @@
  */
 
 const Joi = require('joi');
-const { authMessages } = require('../constant/messages');
 
 /** @typedef {import('../types/submissions').CreateSubmissionRequest} CreateSubmissionRequest */
 

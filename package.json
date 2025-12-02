@@ -3,6 +3,7 @@
   "version": "1.0.0",
   "description": "Coding platform backend with JWT auth, Prisma, PostgreSQL, Kafka, RabbitMQ, and Judge0",
   "main": "server.js",
+  "type": "module",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",

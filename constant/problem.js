@@ -2,89 +2,93 @@
  * Problem Constants and Messages
  */
 
-// Problem Difficulty
-const PROBLEM_DIFFICULTY = {
-  EASY: 'EASY',
-  MEDIUM: 'MEDIUM',
-  HARD: 'HARD',
+// Problem Difficulty Levels
+const problemDifficulty = {
+  easy: 'EASY',
+  medium: 'MEDIUM',
+  hard: 'HARD',
 };
 
 // Problem Limits
-const PROBLEM_LIMITS = {
-  TITLE_MAX_LENGTH: 200,
-  SLUG_MAX_LENGTH: 200,
-  STATEMENT_MAX_LENGTH: 10000,
-  INPUT_FORMAT_MAX_LENGTH: 2000,
-  OUTPUT_FORMAT_MAX_LENGTH: 2000,
-  CONSTRAINTS_MAX_LENGTH: 2000,
-  HINTS_MAX_LENGTH: 3000,
-  SOLUTION_APPROACH_MAX_LENGTH: 5000,
-  MAX_TAGS: 10,
-  TAG_MAX_LENGTH: 50,
-  MAX_TEST_CASES: 100,
-  DEFAULT_TIME_LIMIT: 1000, // ms
-  MIN_TIME_LIMIT: 100, // ms
-  MAX_TIME_LIMIT: 10000, // ms
-  DEFAULT_MEMORY_LIMIT: 262144, // KB (256 MB)
-  MIN_MEMORY_LIMIT: 32768, // KB (32 MB)
-  MAX_MEMORY_LIMIT: 524288, // KB (512 MB)
-  DEFAULT_SOURCE_LIMIT: 50000, // bytes (50 KB)
-  MIN_SOURCE_LIMIT: 1024, // bytes (1 KB)
-  MAX_SOURCE_LIMIT: 100000, // bytes (100 KB)
+const problemLimits = {
+  titleMaxLength: 200,
+  slugMaxLength: 200,
+  statementMaxLength: 10000,
+  inputFormatMaxLength: 2000,
+  outputFormatMaxLength: 2000,
+  constraintsMaxLength: 2000,
+  hintsMaxLength: 3000,
+  solutionApproachMaxLength: 5000,
+  maxTags: 10,
+  tagMaxLength: 50,
+  maxTestCases: 100,
+  defaultTimeLimit: 1000, // ms
+  minTimeLimit: 100, // ms
+  maxTimeLimit: 10000, // ms
+  defaultMemoryLimit: 262144, // KB (256 MB)
+  minMemoryLimit: 32768, // KB (32 MB)
+  maxMemoryLimit: 524288, // KB (512 MB)
+  defaultSourceLimit: 50000, // bytes (50 KB)
+  minSourceLimit: 1024, // bytes (1 KB)
+  maxSourceLimit: 100000, // bytes (100 KB)
 };
 
 // Test Case Limits
-const TEST_CASE_LIMITS = {
-  INPUT_MAX_SIZE: 1048576, // 1 MB
-  OUTPUT_MAX_SIZE: 1048576, // 1 MB
-  EXPLANATION_MAX_LENGTH: 1000,
-  MIN_POINTS: 0,
-  MAX_POINTS: 100,
-  DEFAULT_POINTS: 10,
+const testCaseLimits = {
+  inputMaxSize: 1048576, // 1 MB
+  outputMaxSize: 1048576, // 1 MB
+  explanationMaxLength: 1000,
+  minPoints: 0,
+  maxPoints: 100,
+  defaultPoints: 10,
 };
 
 // Problem Messages
-const PROBLEM_MESSAGES = {
+const problemMessages = {
   // Success
-  CREATED: 'Problem created successfully',
-  UPDATED: 'Problem updated successfully',
-  DELETED: 'Problem deleted successfully',
-  PUBLISHED: 'Problem published successfully',
-  UNPUBLISHED: 'Problem unpublished successfully',
+  created: 'Problem created successfully',
+  updated: 'Problem updated successfully',
+  deleted: 'Problem deleted successfully',
+  published: 'Problem published successfully',
+  unpublished: 'Problem unpublished successfully',
   
   // Test Case Messages
-  TEST_CASE_ADDED: 'Test case added successfully',
-  TEST_CASE_UPDATED: 'Test case updated successfully',
-  TEST_CASE_DELETED: 'Test case deleted successfully',
-  TEST_CASE_NOT_FOUND: 'Test case not found',
+  testCaseAdded: 'Test case added successfully',
+  testCaseUpdated: 'Test case updated successfully',
+  testCaseDeleted: 'Test case deleted successfully',
+  testCaseNotFound: 'Test case not found',
   
   // Errors
-  NOT_FOUND: 'Problem not found',
-  SLUG_EXISTS: 'Problem with this slug already exists',
-  USED_IN_CONTEST: 'Cannot delete problem as it is used in active contests',
-  NO_TEST_CASES: 'Problem must have at least one test case',
+  notFound: 'Problem not found',
+  slugExists: 'Problem with this slug already exists',
+  usedInContest: 'Cannot delete problem as it is used in active contests',
+  noTestCases: 'Problem must have at least one test case',
   
   // Validation
-  TITLE_REQUIRED: 'Problem title is required',
-  SLUG_REQUIRED: 'Problem slug is required',
-  STATEMENT_REQUIRED: 'Problem statement is required',
-  DIFFICULTY_REQUIRED: 'Problem difficulty is required',
-  INVALID_DIFFICULTY: 'Invalid problem difficulty',
-  INVALID_TIME_LIMIT: 'Invalid time limit',
-  INVALID_MEMORY_LIMIT: 'Invalid memory limit',
-  INVALID_SOURCE_LIMIT: 'Invalid source limit',
-  TOO_MANY_TAGS: `Maximum ${PROBLEM_LIMITS.MAX_TAGS} tags allowed`,
-  INVALID_TAG: 'Tag contains invalid characters',
+  titleRequired: 'Problem title is required',
+  slugRequired: 'Problem slug is required',
+  statementRequired: 'Problem statement is required',
+  difficultyRequired: 'Problem difficulty is required',
+  invalidDifficulty: 'Invalid problem difficulty',
+  invalidTimeLimit: 'Invalid time limit',
+  invalidMemoryLimit: 'Invalid memory limit',
+  invalidSourceLimit: 'Invalid source limit',
+  tooManyTags: `Maximum ${problemLimits.maxTags} tags allowed`,
+  invalidTag: 'Tag contains invalid characters',
   
   // Authorization
-  UNAUTHORIZED: 'Not authorized to access this problem',
-  ADMIN_ONLY: 'Only administrators can perform this action',
-  CREATOR_ONLY: 'Only problem creator can perform this action',
+  unauthorized: 'Not authorized to access this problem',
+  adminOnly: 'Only administrators can perform this action',
+  creatorOnly: 'Only problem creator can perform this action',
+  
+  // Service Errors
+  fetchProblemsFailed: 'Failed to get problems',
+  fetchTestCasesFailed: 'Failed to get test cases',
 };
 
 module.exports = {
-  PROBLEM_DIFFICULTY,
-  PROBLEM_LIMITS,
-  TEST_CASE_LIMITS,
-  PROBLEM_MESSAGES,
+  problemDifficulty,
+  problemLimits,
+  testCaseLimits,
+  problemMessages,
 };

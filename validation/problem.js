@@ -3,77 +3,77 @@
  */
 
 const Joi = require('joi');
-const { PROBLEM_DIFFICULTY, PROBLEM_LIMITS, TEST_CASE_LIMITS, PROBLEM_MESSAGES } = require('../constant/problem');
+const { problemDifficulty, problemLimits, testCaseLimits, problemMessages } = require('../constant/problem');
 
 // Create Problem Schema
 const createProblemSchema = Joi.object({
   title: Joi.string()
     .trim()
-    .max(PROBLEM_LIMITS.TITLE_MAX_LENGTH)
+    .max(problemLimits.titleMaxLength)
     .required()
     .messages({
-      'string.empty': PROBLEM_MESSAGES.TITLE_REQUIRED,
-      'string.max': `Title must not exceed ${PROBLEM_LIMITS.TITLE_MAX_LENGTH} characters`,
-      'any.required': PROBLEM_MESSAGES.TITLE_REQUIRED,
+      'string.empty': problemMessages.titleRequired,
+      'string.max': `Title must not exceed ${problemLimits.titleMaxLength} characters`,
+      'any.required': problemMessages.titleRequired,
     }),
   
   slug: Joi.string()
     .trim()
     .lowercase()
     .pattern(/^[a-z0-9-]+$/)
-    .max(PROBLEM_LIMITS.SLUG_MAX_LENGTH)
+    .max(problemLimits.slugMaxLength)
     .optional()
     .messages({
       'string.pattern.base': 'Slug must contain only lowercase letters, numbers, and hyphens',
     }),
   
   difficulty: Joi.string()
-    .valid(...Object.values(PROBLEM_DIFFICULTY))
+    .valid(...Object.values(problemDifficulty))
     .required()
     .messages({
-      'any.only': PROBLEM_MESSAGES.INVALID_DIFFICULTY,
-      'any.required': PROBLEM_MESSAGES.DIFFICULTY_REQUIRED,
+      'any.only': problemMessages.invalidDifficulty,
+      'any.required': problemMessages.difficultyRequired,
     }),
   
   tags: Joi.array()
     .items(
       Joi.string()
         .trim()
-        .max(PROBLEM_LIMITS.TAG_MAX_LENGTH)
+        .max(problemLimits.tagMaxLength)
         .pattern(/^[a-zA-Z0-9-\s]+$/)
     )
-    .max(PROBLEM_LIMITS.MAX_TAGS)
+    .max(problemLimits.maxTags)
     .default([])
     .messages({
-      'array.max': PROBLEM_MESSAGES.TOO_MANY_TAGS,
-      'string.pattern.base': PROBLEM_MESSAGES.INVALID_TAG,
+      'array.max': problemMessages.tooManyTags,
+      'string.pattern.base': problemMessages.invalidTag,
     }),
   
   statement: Joi.string()
     .trim()
-    .max(PROBLEM_LIMITS.STATEMENT_MAX_LENGTH)
+    .max(problemLimits.statementMaxLength)
     .required()
     .messages({
-      'string.empty': PROBLEM_MESSAGES.STATEMENT_REQUIRED,
-      'string.max': `Statement must not exceed ${PROBLEM_LIMITS.STATEMENT_MAX_LENGTH} characters`,
-      'any.required': PROBLEM_MESSAGES.STATEMENT_REQUIRED,
+      'string.empty': problemMessages.statementRequired,
+      'string.max': `Statement must not exceed ${problemLimits.statementMaxLength} characters`,
+      'any.required': problemMessages.statementRequired,
     }),
   
   inputFormat: Joi.string()
     .trim()
-    .max(PROBLEM_LIMITS.INPUT_FORMAT_MAX_LENGTH)
+    .max(problemLimits.inputFormatMaxLength)
     .allow('', null)
     .optional(),
   
   outputFormat: Joi.string()
     .trim()
-    .max(PROBLEM_LIMITS.OUTPUT_FORMAT_MAX_LENGTH)
+    .max(problemLimits.outputFormatMaxLength)
     .allow('', null)
     .optional(),
   
   constraints: Joi.string()
     .trim()
-    .max(PROBLEM_LIMITS.CONSTRAINTS_MAX_LENGTH)
+    .max(problemLimits.constraintsMaxLength)
     .allow('', null)
     .optional(),
   
@@ -91,44 +91,44 @@ const createProblemSchema = Joi.object({
   
   hints: Joi.string()
     .trim()
-    .max(PROBLEM_LIMITS.HINTS_MAX_LENGTH)
+    .max(problemLimits.hintsMaxLength)
     .allow('', null)
     .optional(),
   
   solutionApproach: Joi.string()
     .trim()
-    .max(PROBLEM_LIMITS.SOLUTION_APPROACH_MAX_LENGTH)
+    .max(problemLimits.solutionApproachMaxLength)
     .allow('', null)
     .optional(),
   
   timeLimit: Joi.number()
     .integer()
-    .min(PROBLEM_LIMITS.MIN_TIME_LIMIT)
-    .max(PROBLEM_LIMITS.MAX_TIME_LIMIT)
-    .default(PROBLEM_LIMITS.DEFAULT_TIME_LIMIT)
+    .min(problemLimits.minTimeLimit)
+    .max(problemLimits.maxTimeLimit)
+    .default(problemLimits.defaultTimeLimit)
     .messages({
-      'number.min': `Time limit must be at least ${PROBLEM_LIMITS.MIN_TIME_LIMIT}ms`,
-      'number.max': `Time limit must not exceed ${PROBLEM_LIMITS.MAX_TIME_LIMIT}ms`,
+      'number.min': `Time limit must be at least ${problemLimits.minTimeLimit}ms`,
+      'number.max': `Time limit must not exceed ${problemLimits.maxTimeLimit}ms`,
     }),
   
   memoryLimit: Joi.number()
     .integer()
-    .min(PROBLEM_LIMITS.MIN_MEMORY_LIMIT)
-    .max(PROBLEM_LIMITS.MAX_MEMORY_LIMIT)
-    .default(PROBLEM_LIMITS.DEFAULT_MEMORY_LIMIT)
+    .min(problemLimits.minMemoryLimit)
+    .max(problemLimits.maxMemoryLimit)
+    .default(problemLimits.defaultMemoryLimit)
     .messages({
-      'number.min': `Memory limit must be at least ${PROBLEM_LIMITS.MIN_MEMORY_LIMIT}KB`,
-      'number.max': `Memory limit must not exceed ${PROBLEM_LIMITS.MAX_MEMORY_LIMIT}KB`,
+      'number.min': `Memory limit must be at least ${problemLimits.minMemoryLimit}KB`,
+      'number.max': `Memory limit must not exceed ${problemLimits.maxMemoryLimit}KB`,
     }),
   
   sourceLimit: Joi.number()
     .integer()
-    .min(PROBLEM_LIMITS.MIN_SOURCE_LIMIT)
-    .max(PROBLEM_LIMITS.MAX_SOURCE_LIMIT)
-    .default(PROBLEM_LIMITS.DEFAULT_SOURCE_LIMIT)
+    .min(problemLimits.minSourceLimit)
+    .max(problemLimits.maxSourceLimit)
+    .default(problemLimits.defaultSourceLimit)
     .messages({
-      'number.min': `Source limit must be at least ${PROBLEM_LIMITS.MIN_SOURCE_LIMIT} bytes`,
-      'number.max': `Source limit must not exceed ${PROBLEM_LIMITS.MAX_SOURCE_LIMIT} bytes`,
+      'number.min': `Source limit must be at least ${problemLimits.minSourceLimit} bytes`,
+      'number.max': `Source limit must not exceed ${problemLimits.maxSourceLimit} bytes`,
     }),
   
   isPublic: Joi.boolean().default(false),
@@ -138,59 +138,59 @@ const createProblemSchema = Joi.object({
 const updateProblemSchema = Joi.object({
   title: Joi.string()
     .trim()
-    .max(PROBLEM_LIMITS.TITLE_MAX_LENGTH)
+    .max(problemLimits.titleMaxLength)
     .messages({
-      'string.max': `Title must not exceed ${PROBLEM_LIMITS.TITLE_MAX_LENGTH} characters`,
+      'string.max': `Title must not exceed ${problemLimits.titleMaxLength} characters`,
     }),
   
   slug: Joi.string()
     .trim()
     .lowercase()
     .pattern(/^[a-z0-9-]+$/)
-    .max(PROBLEM_LIMITS.SLUG_MAX_LENGTH)
+    .max(problemLimits.slugMaxLength)
     .messages({
       'string.pattern.base': 'Slug must contain only lowercase letters, numbers, and hyphens',
     }),
   
   difficulty: Joi.string()
-    .valid(...Object.values(PROBLEM_DIFFICULTY))
+    .valid(...Object.values(problemDifficulty))
     .messages({
-      'any.only': PROBLEM_MESSAGES.INVALID_DIFFICULTY,
+      'any.only': problemMessages.invalidDifficulty,
     }),
   
   tags: Joi.array()
     .items(
       Joi.string()
         .trim()
-        .max(PROBLEM_LIMITS.TAG_MAX_LENGTH)
+        .max(problemLimits.tagMaxLength)
         .pattern(/^[a-zA-Z0-9-\s]+$/)
     )
-    .max(PROBLEM_LIMITS.MAX_TAGS)
+    .max(problemLimits.maxTags)
     .messages({
-      'array.max': PROBLEM_MESSAGES.TOO_MANY_TAGS,
-      'string.pattern.base': PROBLEM_MESSAGES.INVALID_TAG,
+      'array.max': problemMessages.tooManyTags,
+      'string.pattern.base': problemMessages.invalidTag,
     }),
   
   statement: Joi.string()
     .trim()
-    .max(PROBLEM_LIMITS.STATEMENT_MAX_LENGTH)
+    .max(problemLimits.statementMaxLength)
     .messages({
-      'string.max': `Statement must not exceed ${PROBLEM_LIMITS.STATEMENT_MAX_LENGTH} characters`,
+      'string.max': `Statement must not exceed ${problemLimits.statementMaxLength} characters`,
     }),
   
   inputFormat: Joi.string()
     .trim()
-    .max(PROBLEM_LIMITS.INPUT_FORMAT_MAX_LENGTH)
+    .max(problemLimits.inputFormatMaxLength)
     .allow('', null),
   
   outputFormat: Joi.string()
     .trim()
-    .max(PROBLEM_LIMITS.OUTPUT_FORMAT_MAX_LENGTH)
+    .max(problemLimits.outputFormatMaxLength)
     .allow('', null),
   
   constraints: Joi.string()
     .trim()
-    .max(PROBLEM_LIMITS.CONSTRAINTS_MAX_LENGTH)
+    .max(problemLimits.constraintsMaxLength)
     .allow('', null),
   
   examples: Joi.array()
@@ -205,39 +205,39 @@ const updateProblemSchema = Joi.object({
   
   hints: Joi.string()
     .trim()
-    .max(PROBLEM_LIMITS.HINTS_MAX_LENGTH)
+    .max(problemLimits.hintsMaxLength)
     .allow('', null),
   
   solutionApproach: Joi.string()
     .trim()
-    .max(PROBLEM_LIMITS.SOLUTION_APPROACH_MAX_LENGTH)
+    .max(problemLimits.solutionApproachMaxLength)
     .allow('', null),
   
   timeLimit: Joi.number()
     .integer()
-    .min(PROBLEM_LIMITS.MIN_TIME_LIMIT)
-    .max(PROBLEM_LIMITS.MAX_TIME_LIMIT)
+    .min(problemLimits.minTimeLimit)
+    .max(problemLimits.maxTimeLimit)
     .messages({
-      'number.min': `Time limit must be at least ${PROBLEM_LIMITS.MIN_TIME_LIMIT}ms`,
-      'number.max': `Time limit must not exceed ${PROBLEM_LIMITS.MAX_TIME_LIMIT}ms`,
+      'number.min': `Time limit must be at least ${problemLimits.minTimeLimit}ms`,
+      'number.max': `Time limit must not exceed ${problemLimits.maxTimeLimit}ms`,
     }),
   
   memoryLimit: Joi.number()
     .integer()
-    .min(PROBLEM_LIMITS.MIN_MEMORY_LIMIT)
-    .max(PROBLEM_LIMITS.MAX_MEMORY_LIMIT)
+    .min(problemLimits.minMemoryLimit)
+    .max(problemLimits.maxMemoryLimit)
     .messages({
-      'number.min': `Memory limit must be at least ${PROBLEM_LIMITS.MIN_MEMORY_LIMIT}KB`,
-      'number.max': `Memory limit must not exceed ${PROBLEM_LIMITS.MAX_MEMORY_LIMIT}KB`,
+      'number.min': `Memory limit must be at least ${problemLimits.minMemoryLimit}KB`,
+      'number.max': `Memory limit must not exceed ${problemLimits.maxMemoryLimit}KB`,
     }),
   
   sourceLimit: Joi.number()
     .integer()
-    .min(PROBLEM_LIMITS.MIN_SOURCE_LIMIT)
-    .max(PROBLEM_LIMITS.MAX_SOURCE_LIMIT)
+    .min(problemLimits.minSourceLimit)
+    .max(problemLimits.maxSourceLimit)
     .messages({
-      'number.min': `Source limit must be at least ${PROBLEM_LIMITS.MIN_SOURCE_LIMIT} bytes`,
-      'number.max': `Source limit must not exceed ${PROBLEM_LIMITS.MAX_SOURCE_LIMIT} bytes`,
+      'number.min': `Source limit must be at least ${problemLimits.minSourceLimit} bytes`,
+      'number.max': `Source limit must not exceed ${problemLimits.maxSourceLimit} bytes`,
     }),
   
   isPublic: Joi.boolean(),
@@ -246,20 +246,20 @@ const updateProblemSchema = Joi.object({
 // Create Test Case Schema
 const createTestCaseSchema = Joi.object({
   input: Joi.string()
-    .max(TEST_CASE_LIMITS.INPUT_MAX_SIZE)
+    .max(testCaseLimits.inputMaxSize)
     .required()
     .messages({
       'string.empty': 'Test case input is required',
-      'string.max': `Input must not exceed ${TEST_CASE_LIMITS.INPUT_MAX_SIZE} bytes`,
+      'string.max': `Input must not exceed ${testCaseLimits.inputMaxSize} bytes`,
       'any.required': 'Test case input is required',
     }),
   
   expectedOutput: Joi.string()
-    .max(TEST_CASE_LIMITS.OUTPUT_MAX_SIZE)
+    .max(testCaseLimits.outputMaxSize)
     .required()
     .messages({
       'string.empty': 'Expected output is required',
-      'string.max': `Output must not exceed ${TEST_CASE_LIMITS.OUTPUT_MAX_SIZE} bytes`,
+      'string.max': `Output must not exceed ${testCaseLimits.outputMaxSize} bytes`,
       'any.required': 'Expected output is required',
     }),
   
@@ -267,17 +267,17 @@ const createTestCaseSchema = Joi.object({
   
   points: Joi.number()
     .integer()
-    .min(TEST_CASE_LIMITS.MIN_POINTS)
-    .max(TEST_CASE_LIMITS.MAX_POINTS)
-    .default(TEST_CASE_LIMITS.DEFAULT_POINTS)
+    .min(testCaseLimits.minPoints)
+    .max(testCaseLimits.maxPoints)
+    .default(testCaseLimits.defaultPoints)
     .messages({
-      'number.min': `Points must be at least ${TEST_CASE_LIMITS.MIN_POINTS}`,
-      'number.max': `Points must not exceed ${TEST_CASE_LIMITS.MAX_POINTS}`,
+      'number.min': `Points must be at least ${testCaseLimits.minPoints}`,
+      'number.max': `Points must not exceed ${testCaseLimits.maxPoints}`,
     }),
   
   explanation: Joi.string()
     .trim()
-    .max(TEST_CASE_LIMITS.EXPLANATION_MAX_LENGTH)
+    .max(testCaseLimits.explanationMaxLength)
     .allow('', null)
     .optional(),
   
@@ -293,31 +293,31 @@ const createTestCaseSchema = Joi.object({
 // Update Test Case Schema
 const updateTestCaseSchema = Joi.object({
   input: Joi.string()
-    .max(TEST_CASE_LIMITS.INPUT_MAX_SIZE)
+    .max(testCaseLimits.inputMaxSize)
     .messages({
-      'string.max': `Input must not exceed ${TEST_CASE_LIMITS.INPUT_MAX_SIZE} bytes`,
+      'string.max': `Input must not exceed ${testCaseLimits.inputMaxSize} bytes`,
     }),
   
   expectedOutput: Joi.string()
-    .max(TEST_CASE_LIMITS.OUTPUT_MAX_SIZE)
+    .max(testCaseLimits.outputMaxSize)
     .messages({
-      'string.max': `Output must not exceed ${TEST_CASE_LIMITS.OUTPUT_MAX_SIZE} bytes`,
+      'string.max': `Output must not exceed ${testCaseLimits.outputMaxSize} bytes`,
     }),
   
   isHidden: Joi.boolean(),
   
   points: Joi.number()
     .integer()
-    .min(TEST_CASE_LIMITS.MIN_POINTS)
-    .max(TEST_CASE_LIMITS.MAX_POINTS)
+    .min(testCaseLimits.minPoints)
+    .max(testCaseLimits.maxPoints)
     .messages({
-      'number.min': `Points must be at least ${TEST_CASE_LIMITS.MIN_POINTS}`,
-      'number.max': `Points must not exceed ${TEST_CASE_LIMITS.MAX_POINTS}`,
+      'number.min': `Points must be at least ${testCaseLimits.minPoints}`,
+      'number.max': `Points must not exceed ${testCaseLimits.maxPoints}`,
     }),
   
   explanation: Joi.string()
     .trim()
-    .max(TEST_CASE_LIMITS.EXPLANATION_MAX_LENGTH)
+    .max(testCaseLimits.explanationMaxLength)
     .allow('', null),
   
   orderIndex: Joi.number()
@@ -332,7 +332,7 @@ const updateTestCaseSchema = Joi.object({
 const getProblemsSchema = Joi.object({
   page: Joi.number().integer().min(1).default(1),
   limit: Joi.number().integer().min(1).max(100).default(20),
-  difficulty: Joi.string().valid(...Object.values(PROBLEM_DIFFICULTY)).optional(),
+  difficulty: Joi.string().valid(...Object.values(problemDifficulty)).optional(),
   tags: Joi.string().trim().optional(),
   search: Joi.string().trim().max(100).optional(),
   isPublic: Joi.boolean().optional(),

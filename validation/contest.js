@@ -3,18 +3,18 @@
  */
 
 const Joi = require('joi');
-const { CONTEST_TYPE, CONTEST_STATUS, CONTEST_LIMITS, CONTEST_MESSAGES } = require('../constant/contest');
+const { contestType, contestStatus, contestLimits, contestMessages } = require('../constant/contest');
 
 // Create Contest Schema
 const createContestSchema = Joi.object({
   title: Joi.string()
     .trim()
-    .max(CONTEST_LIMITS.TITLE_MAX_LENGTH)
+    .max(contestLimits.titleMaxLength)
     .required()
     .messages({
-      'string.empty': CONTEST_MESSAGES.TITLE_REQUIRED,
-      'string.max': `Title must not exceed ${CONTEST_LIMITS.TITLE_MAX_LENGTH} characters`,
-      'any.required': CONTEST_MESSAGES.TITLE_REQUIRED,
+      'string.empty': contestMessages.titleRequired,
+      'string.max': `Title must not exceed ${contestLimits.titleMaxLength} characters`,
+      'any.required': contestMessages.titleRequired,
     }),
   
   slug: Joi.string()
@@ -29,12 +29,12 @@ const createContestSchema = Joi.object({
   
   description: Joi.string()
     .trim()
-    .max(CONTEST_LIMITS.DESCRIPTION_MAX_LENGTH)
+    .max(contestLimits.descriptionMaxLength)
     .required()
     .messages({
-      'string.empty': CONTEST_MESSAGES.DESCRIPTION_REQUIRED,
-      'string.max': `Description must not exceed ${CONTEST_LIMITS.DESCRIPTION_MAX_LENGTH} characters`,
-      'any.required': CONTEST_MESSAGES.DESCRIPTION_REQUIRED,
+      'string.empty': contestMessages.descriptionRequired,
+      'string.max': `Description must not exceed ${contestLimits.descriptionMaxLength} characters`,
+      'any.required': contestMessages.descriptionRequired,
     }),
   
   startTime: Joi.date()
@@ -42,7 +42,7 @@ const createContestSchema = Joi.object({
     .required()
     .messages({
       'date.base': 'Start time must be a valid date',
-      'any.required': CONTEST_MESSAGES.START_TIME_REQUIRED,
+      'any.required': contestMessages.startTimeRequired,
     }),
   
   endTime: Joi.date()
@@ -51,49 +51,49 @@ const createContestSchema = Joi.object({
     .required()
     .messages({
       'date.base': 'End time must be a valid date',
-      'date.greater': CONTEST_MESSAGES.INVALID_TIME_RANGE,
-      'any.required': CONTEST_MESSAGES.END_TIME_REQUIRED,
+      'date.greater': contestMessages.invalidTimeRange,
+      'any.required': contestMessages.endTimeRequired,
     }),
   
   duration: Joi.number()
     .integer()
-    .min(CONTEST_LIMITS.MIN_DURATION)
-    .max(CONTEST_LIMITS.MAX_DURATION)
+    .min(contestLimits.minDuration)
+    .max(contestLimits.maxDuration)
     .required()
     .messages({
-      'number.min': `Duration must be at least ${CONTEST_LIMITS.MIN_DURATION} minutes`,
-      'number.max': `Duration must not exceed ${CONTEST_LIMITS.MAX_DURATION} minutes`,
-      'any.required': CONTEST_MESSAGES.DURATION_REQUIRED,
+      'number.min': `Duration must be at least ${contestLimits.minDuration} minutes`,
+      'number.max': `Duration must not exceed ${contestLimits.maxDuration} minutes`,
+      'any.required': contestMessages.durationRequired,
     }),
   
   type: Joi.string()
-    .valid(...Object.values(CONTEST_TYPE))
-    .default(CONTEST_TYPE.PUBLIC)
+    .valid(...Object.values(contestType))
+    .default(contestType.public)
     .messages({
-      'any.only': CONTEST_MESSAGES.INVALID_TYPE,
+      'any.only': contestMessages.invalidType,
     }),
   
   rules: Joi.string()
     .trim()
-    .max(CONTEST_LIMITS.RULES_MAX_LENGTH)
+    .max(contestLimits.rulesMaxLength)
     .allow('', null)
     .optional(),
   
   prizes: Joi.string()
     .trim()
-    .max(CONTEST_LIMITS.PRIZES_MAX_LENGTH)
+    .max(contestLimits.prizesMaxLength)
     .allow('', null)
     .optional(),
   
   maxParticipants: Joi.number()
     .integer()
     .min(1)
-    .max(CONTEST_LIMITS.MAX_PARTICIPANTS)
+    .max(contestLimits.maxParticipants)
     .optional()
     .allow(null)
     .messages({
       'number.min': 'Max participants must be at least 1',
-      'number.max': `Max participants must not exceed ${CONTEST_LIMITS.MAX_PARTICIPANTS}`,
+      'number.max': `Max participants must not exceed ${contestLimits.maxParticipants}`,
     }),
   
   registrationDeadline: Joi.date()
@@ -103,7 +103,7 @@ const createContestSchema = Joi.object({
     .allow(null)
     .messages({
       'date.base': 'Registration deadline must be a valid date',
-      'date.less': CONTEST_MESSAGES.INVALID_REGISTRATION_DEADLINE,
+      'date.less': contestMessages.invalidRegistrationDeadline,
     }),
   
   isPublic: Joi.boolean()
@@ -114,9 +114,9 @@ const createContestSchema = Joi.object({
 const updateContestSchema = Joi.object({
   title: Joi.string()
     .trim()
-    .max(CONTEST_LIMITS.TITLE_MAX_LENGTH)
+    .max(contestLimits.titleMaxLength)
     .messages({
-      'string.max': `Title must not exceed ${CONTEST_LIMITS.TITLE_MAX_LENGTH} characters`,
+      'string.max': `Title must not exceed ${contestLimits.titleMaxLength} characters`,
     }),
   
   slug: Joi.string()
@@ -130,9 +130,9 @@ const updateContestSchema = Joi.object({
   
   description: Joi.string()
     .trim()
-    .max(CONTEST_LIMITS.DESCRIPTION_MAX_LENGTH)
+    .max(contestLimits.descriptionMaxLength)
     .messages({
-      'string.max': `Description must not exceed ${CONTEST_LIMITS.DESCRIPTION_MAX_LENGTH} characters`,
+      'string.max': `Description must not exceed ${contestLimits.descriptionMaxLength} characters`,
     }),
   
   startTime: Joi.date().iso(),
@@ -144,42 +144,42 @@ const updateContestSchema = Joi.object({
       then: Joi.date().greater(Joi.ref('startTime')),
     })
     .messages({
-      'date.greater': CONTEST_MESSAGES.INVALID_TIME_RANGE,
+      'date.greater': contestMessages.invalidTimeRange,
     }),
   
   duration: Joi.number()
     .integer()
-    .min(CONTEST_LIMITS.MIN_DURATION)
-    .max(CONTEST_LIMITS.MAX_DURATION)
+    .min(contestLimits.minDuration)
+    .max(contestLimits.maxDuration)
     .messages({
-      'number.min': `Duration must be at least ${CONTEST_LIMITS.MIN_DURATION} minutes`,
-      'number.max': `Duration must not exceed ${CONTEST_LIMITS.MAX_DURATION} minutes`,
+      'number.min': `Duration must be at least ${contestLimits.minDuration} minutes`,
+      'number.max': `Duration must not exceed ${contestLimits.maxDuration} minutes`,
     }),
   
   type: Joi.string()
-    .valid(...Object.values(CONTEST_TYPE))
+    .valid(...Object.values(contestType))
     .messages({
-      'any.only': CONTEST_MESSAGES.INVALID_TYPE,
+      'any.only': contestMessages.invalidType,
     }),
   
   rules: Joi.string()
     .trim()
-    .max(CONTEST_LIMITS.RULES_MAX_LENGTH)
+    .max(contestLimits.rulesMaxLength)
     .allow('', null),
   
   prizes: Joi.string()
     .trim()
-    .max(CONTEST_LIMITS.PRIZES_MAX_LENGTH)
+    .max(contestLimits.prizesMaxLength)
     .allow('', null),
   
   maxParticipants: Joi.number()
     .integer()
     .min(1)
-    .max(CONTEST_LIMITS.MAX_PARTICIPANTS)
+    .max(contestLimits.maxParticipants)
     .allow(null)
     .messages({
       'number.min': 'Max participants must be at least 1',
-      'number.max': `Max participants must not exceed ${CONTEST_LIMITS.MAX_PARTICIPANTS}`,
+      'number.max': `Max participants must not exceed ${contestLimits.maxParticipants}`,
     }),
   
   registrationDeadline: Joi.date()
@@ -232,10 +232,10 @@ const addProblemToContestSchema = Joi.object({
 // Update Contest Status Schema
 const updateContestStatusSchema = Joi.object({
   status: Joi.string()
-    .valid(...Object.values(CONTEST_STATUS))
+    .valid(...Object.values(contestStatus))
     .required()
     .messages({
-      'any.only': CONTEST_MESSAGES.INVALID_STATUS,
+      'any.only': contestMessages.invalidStatus,
       'any.required': 'Status is required',
     }),
 });
@@ -244,8 +244,8 @@ const updateContestStatusSchema = Joi.object({
 const getContestsSchema = Joi.object({
   page: Joi.number().integer().min(1).default(1),
   limit: Joi.number().integer().min(1).max(100).default(20),
-  status: Joi.string().valid(...Object.values(CONTEST_STATUS)).optional(),
-  type: Joi.string().valid(...Object.values(CONTEST_TYPE)).optional(),
+  status: Joi.string().valid(...Object.values(contestStatus)).optional(),
+  type: Joi.string().valid(...Object.values(contestType)).optional(),
   search: Joi.string().trim().max(100).optional(),
   sortBy: Joi.string().valid('startTime', 'endTime', 'createdAt', 'title').default('startTime'),
   sortOrder: Joi.string().valid('asc', 'desc').default('desc'),

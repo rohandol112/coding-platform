@@ -3,47 +3,59 @@
  */
 
 // Submission Status
-const SUBMISSION_STATUS = {
-  QUEUED: 'QUEUED',
-  RUNNING: 'RUNNING',
-  COMPILE_ERROR: 'COMPILE_ERROR',
-  WRONG_ANSWER: 'WRONG_ANSWER',
-  TIME_LIMIT_EXCEEDED: 'TIME_LIMIT_EXCEEDED',
-  RUNTIME_ERROR: 'RUNTIME_ERROR',
-  MEMORY_LIMIT_EXCEEDED: 'MEMORY_LIMIT_EXCEEDED',
-  ACCEPTED: 'ACCEPTED',
-  PARTIAL: 'PARTIAL',
-  FAILED: 'FAILED',
+const submissionStatus = {
+  queued: 'QUEUED',
+  running: 'RUNNING',
+  compileError: 'COMPILE_ERROR',
+  wrongAnswer: 'WRONG_ANSWER',
+  timeLimitExceeded: 'TIME_LIMIT_EXCEEDED',
+  runtimeError: 'RUNTIME_ERROR',
+  memoryLimitExceeded: 'MEMORY_LIMIT_EXCEEDED',
+  accepted: 'ACCEPTED',
+  partial: 'PARTIAL',
+  failed: 'FAILED',
 };
 
 // Submission Messages
-const SUBMISSION_MESSAGES = {
+const submissionMessages = {
   // Success
-  CREATED: 'Submission created successfully',
-  JUDGED: 'Submission judged successfully',
-  RETRIEVED: 'Submission retrieved successfully',
+  created: 'Submission created successfully',
+  judged: 'Submission judged successfully',
+  retrieved: 'Submission retrieved successfully',
   
   // Errors
-  NOT_FOUND: 'Submission not found',
-  PROBLEM_NOT_FOUND: 'Problem not found',
-  CONTEST_NOT_FOUND: 'Contest not found',
-  CONTEST_NOT_RUNNING: 'Contest is not running',
-  USER_NOT_REGISTERED: 'User not registered for this contest',
-  JUDGE_FAILED: 'Failed to judge submission',
-  RATE_LIMIT_EXCEEDED: 'Submission rate limit exceeded. Please wait before submitting again',
+  notFound: 'Submission not found',
+  problemNotFound: 'Problem not found',
+  contestNotFound: 'Contest not found',
+  contestNotRunning: 'Contest is not running',
+  userNotRegistered: 'User not registered for this contest',
+  judgeFailed: 'Failed to judge submission',
+  rateLimitExceeded: 'Submission rate limit exceeded. Please wait before submitting again',
+  createFailed: 'Failed to create submission',
+  fetchFailed: 'Failed to get submission',
+  userSubmissionsFailed: 'Failed to get user submissions',
+  updateStatusFailed: 'Failed to update submission status',
+  updateResultFailed: 'Failed to update submission result',
+  
+  // Judge0 Service
+  judge0SubmitFailed: 'Failed to submit code to Judge0',
+  judge0FetchFailed: 'Failed to fetch result from Judge0',
+  judge0Timeout: 'Submission polling timeout',
   
   // Validation
-  CODE_REQUIRED: 'Source code is required',
-  LANGUAGE_REQUIRED: 'Programming language is required',
-  PROBLEM_ID_REQUIRED: 'Problem ID is required',
-  INVALID_LANGUAGE: 'Invalid programming language',
-  CODE_TOO_LARGE: 'Source code exceeds maximum allowed size',
+  codeRequired: 'Source code is required',
+  languageRequired: 'Programming language is required',
+  problemIdRequired: 'Problem ID is required',
+  invalidLanguage: 'Invalid programming language',
+  codeTooLarge: 'Source code exceeds maximum allowed size',
+  validationFailed: 'Validation failed',
+  userOrProblemNotFound: 'User or Problem not found',
   
   // Authorization
-  UNAUTHORIZED: 'Not authorized to access this submission',
+  unauthorized: 'Not authorized to access this submission',
 };
 
 module.exports = {
-  SUBMISSION_STATUS,
-  SUBMISSION_MESSAGES,
+  submissionStatus,
+  submissionMessages,
 };

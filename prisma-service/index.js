@@ -8,6 +8,8 @@ require('dotenv').config({ path: require('path').join(__dirname, '..', '.env') }
 const express = require('express');
 const { PrismaClient } = require('@prisma/client');
 const kafkaService = require('../services/messaging/kafkaService');
+const { submissionMessages } = require('../constant/submission');
+const { problemMessages } = require('../constant/problem');
 
 const app = express();
 const prisma = new PrismaClient();
@@ -25,7 +27,15 @@ const PORT = process.env.PRISMA_SERVICE_PORT || 3001;
  */
 app.post('/prisma/submissions', async (req, res) => {
   try {
-    const { id, userId, problemId, language, sourceRef, status, isRunOnly, createdAt } = req.body;
+    const { id, userId, problemId, language, code, status, isRunOnly, createdAt } = req.body;
+
+    // Validate required fields
+    if (!code || code.trim().length === 0) {
+      return res.status(400).json({
+        success: false,
+        message: submissionMessages.codeRequired,
+      });
+    }
 
     const submission = await prisma.submission.create({
       data: {
@@ -33,7 +43,7 @@ app.post('/prisma/submissions', async (req, res) => {
         userId,
         problemId,
         language,
-        sourceRef,
+        code,
         status,
         isRunOnly,
         createdAt: new Date(createdAt),
@@ -48,13 +58,13 @@ app.post('/prisma/submissions', async (req, res) => {
       // Foreign key constraint failed
       return res.status(404).json({
         success: false,
-        message: 'User or Problem not found',
+        message: submissionMessages.userOrProblemNotFound,
       });
     }
 
     res.status(500).json({
       success: false,
-      message: 'Failed to create submission',
+      message: submissionMessages.createFailed,
       error: error.message,
     });
   }
@@ -90,7 +100,7 @@ app.get('/prisma/submissions/:id', async (req, res) => {
     if (!submission) {
       return res.status(404).json({
         success: false,
-        message: 'Submission not found',
+        message: submissionMessages.notFound,
       });
     }
 
@@ -99,7 +109,7 @@ app.get('/prisma/submissions/:id', async (req, res) => {
     console.error('Failed to get submission:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to get submission',
+      message: submissionMessages.fetchFailed,
       error: error.message,
     });
   }
@@ -126,13 +136,13 @@ app.patch('/prisma/submissions/:id/status', async (req, res) => {
     if (error.code === 'P2025') {
       return res.status(404).json({
         success: false,
-        message: 'Submission not found',
+        message: submissionMessages.notFound,
       });
     }
 
     res.status(500).json({
       success: false,
-      message: 'Failed to update submission status',
+      message: submissionMessages.updateStatusFailed,
       error: error.message,
     });
   }
@@ -198,13 +208,13 @@ app.put('/prisma/submissions/:id/result', async (req, res) => {
     if (error.code === 'P2025') {
       return res.status(404).json({
         success: false,
-        message: 'Submission not found',
+        message: submissionMessages.notFound,
       });
     }
 
     res.status(500).json({
       success: false,
-      message: 'Failed to update submission result',
+      message: submissionMessages.updateResultFailed,
       error: error.message,
     });
   }
@@ -258,7 +268,7 @@ app.get('/prisma/submissions/user/:userId', async (req, res) => {
     console.error('Failed to get user submissions:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to get user submissions',
+      message: submissionMessages.userSubmissionsFailed,
       error: error.message,
     });
   }
@@ -305,7 +315,7 @@ app.get('/prisma/problems', async (req, res) => {
     console.error('Failed to get problems:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to get problems',
+      message: problemMessages.fetchProblemsFailed,
       error: error.message,
     });
   }
@@ -326,7 +336,7 @@ app.get('/prisma/problems/:id', async (req, res) => {
     if (!problem) {
       return res.status(404).json({
         success: false,
-        message: 'Problem not found',
+        message: problemMessages.notFound,
       });
     }
 
@@ -335,7 +345,7 @@ app.get('/prisma/problems/:id', async (req, res) => {
     console.error('Failed to get problem:', error);
     res.status(500).json({
       success: false,
-      message: 'Failed to get problem',
+      message: problemMessages.fetchProblemsFailed,
       error: error.message,
     });
   }

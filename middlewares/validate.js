@@ -3,6 +3,8 @@
  * Validates request data using Joi schemas
  */
 
+const { submissionMessages } = require('../constant/submission');
+
 /**
  * Validate middleware factory
  * @param {Object} schema - Joi validation schema
@@ -27,7 +29,7 @@ const validate = (schema, property = 'body') => {
 
       return res.status(400).json({
         success: false,
-        message: 'Validation failed',
+        message: submissionMessages.validationFailed,
         errors,
       });
     }

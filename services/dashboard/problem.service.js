@@ -4,7 +4,7 @@
  */
 
 const axios = require('axios');
-const { PROBLEM_MESSAGES } = require('../../../constant/problem');
+const { problemMessages } = require('../../../constant/problem');
 
 const prismaServiceUrl = process.env.PRISMA_SERVICE_URL || 'http://localhost:3001';
 
@@ -27,7 +27,7 @@ const createProblem = async (problemData, createdBy) => {
     console.error('Create problem error:', error.response?.data || error.message);
     
     if (error.response?.status === 409) {
-      throw new Error(PROBLEM_MESSAGES.SLUG_EXISTS);
+      throw new Error(problemMessages.slugExists);
     }
     
     throw new Error(error.response?.data?.message || 'Failed to create problem');
@@ -50,11 +50,11 @@ const updateProblem = async (problemId, updateData, userId) => {
     console.error('Update problem error:', error.response?.data || error.message);
     
     if (error.response?.status === 404) {
-      throw new Error(PROBLEM_MESSAGES.NOT_FOUND);
+      throw new Error(problemMessages.notFound);
     }
     
     if (error.response?.status === 409) {
-      throw new Error(PROBLEM_MESSAGES.SLUG_EXISTS);
+      throw new Error(problemMessages.slugExists);
     }
     
     throw new Error(error.response?.data?.message || 'Failed to update problem');
@@ -71,11 +71,11 @@ const deleteProblem = async (problemId, userId) => {
     console.error('Delete problem error:', error.response?.data || error.message);
     
     if (error.response?.status === 404) {
-      throw new Error(PROBLEM_MESSAGES.NOT_FOUND);
+      throw new Error(problemMessages.notFound);
     }
     
     if (error.response?.status === 409) {
-      throw new Error(PROBLEM_MESSAGES.USED_IN_CONTEST);
+      throw new Error(problemMessages.usedInContest);
     }
     
     throw new Error(error.response?.data?.message || 'Failed to delete problem');
@@ -95,7 +95,7 @@ const getProblemById = async (problemId, includeTestCases = false) => {
     return response.data;
   } catch (error) {
     if (error.response?.status === 404) {
-      throw new Error(PROBLEM_MESSAGES.NOT_FOUND);
+      throw new Error(problemMessages.notFound);
     }
     throw new Error(error.response?.data?.message || 'Failed to get problem');
   }
@@ -125,7 +125,7 @@ const getProblems = async (filters) => {
     return response.data;
   } catch (error) {
     console.error('Get problems error:', error.response?.data || error.message);
-    throw new Error('Failed to get problems');
+    throw new Error(problemMessages.fetchProblemsFailed);
   }
 };
 
@@ -145,7 +145,7 @@ const addTestCase = async (problemId, testCaseData, userId) => {
     console.error('Add test case error:', error.response?.data || error.message);
     
     if (error.response?.status === 404) {
-      throw new Error(PROBLEM_MESSAGES.NOT_FOUND);
+      throw new Error(problemMessages.notFound);
     }
     
     throw new Error(error.response?.data?.message || 'Failed to add test case');
@@ -168,7 +168,7 @@ const updateTestCase = async (testCaseId, updateData, userId) => {
     console.error('Update test case error:', error.response?.data || error.message);
     
     if (error.response?.status === 404) {
-      throw new Error(PROBLEM_MESSAGES.TEST_CASE_NOT_FOUND);
+      throw new Error(problemMessages.testCaseNotFound);
     }
     
     throw new Error(error.response?.data?.message || 'Failed to update test case');
@@ -185,7 +185,7 @@ const deleteTestCase = async (testCaseId, userId) => {
     console.error('Delete test case error:', error.response?.data || error.message);
     
     if (error.response?.status === 404) {
-      throw new Error(PROBLEM_MESSAGES.TEST_CASE_NOT_FOUND);
+      throw new Error(problemMessages.testCaseNotFound);
     }
     
     throw new Error(error.response?.data?.message || 'Failed to delete test case');
@@ -205,7 +205,7 @@ const getTestCases = async (problemId, includeHidden = true) => {
     return response.data;
   } catch (error) {
     console.error('Get test cases error:', error.response?.data || error.message);
-    throw new Error('Failed to get test cases');
+    throw new Error(problemMessages.fetchTestCasesFailed);
   }
 };
 

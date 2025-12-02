@@ -4,7 +4,7 @@
  */
 
 const contestService = require('../../services/dashboard/contest.service');
-const { CONTEST_MESSAGES } = require('../../constant/contest');
+const { contestMessages } = require('../../constant/contest');
 
 /**
  * Create contest
@@ -16,7 +16,7 @@ const createContest = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: CONTEST_MESSAGES.CREATED,
+      message: contestMessages.created,
       data: contest,
     });
   } catch (error) {
@@ -39,7 +39,7 @@ const updateContest = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: CONTEST_MESSAGES.UPDATED,
+      message: contestMessages.updated,
       data: contest,
     });
   } catch (error) {
@@ -62,7 +62,7 @@ const deleteContest = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: CONTEST_MESSAGES.DELETED,
+      message: contestMessages.deleted,
     });
   } catch (error) {
     console.error('Delete contest controller error:', error);
@@ -135,7 +135,7 @@ const addProblem = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: CONTEST_MESSAGES.PROBLEM_ADDED,
+      message: contestMessages.problemAdded,
       data: contestProblem,
     });
   } catch (error) {
@@ -157,7 +157,7 @@ const removeProblem = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: CONTEST_MESSAGES.PROBLEM_REMOVED,
+      message: contestMessages.problemRemoved,
     });
   } catch (error) {
     console.error('Remove problem controller error:', error);
@@ -179,7 +179,7 @@ const updateStatus = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: CONTEST_MESSAGES.UPDATED,
+      message: contestMessages.updated,
       data: contest,
     });
   } catch (error) {

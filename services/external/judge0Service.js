@@ -4,6 +4,7 @@
 
 const axios = require('axios');
 const { JUDGE0_LANGUAGES, JUDGE0_STATUS } = require('../../../constant/judge');
+const { submissionMessages } = require('../../../constant/submission');
 
 /** @typedef {import('../../../types/submissions').Judge0SubmissionRequest} Judge0SubmissionRequest */
 /** @typedef {import('../../../types/submissions').Judge0SubmissionResponse} Judge0SubmissionResponse */
@@ -56,7 +57,7 @@ class Judge0Service {
       return response.data;
     } catch (error) {
       console.error('Judge0 submission failed:', error.response?.data || error.message);
-      throw new Error('Failed to submit code to Judge0');
+      throw new Error(submissionMessages.judge0SubmitFailed);
     }
   }
 
@@ -83,7 +84,7 @@ class Judge0Service {
       return response.data;
     } catch (error) {
       console.error('Judge0 result fetch failed:', error.response?.data || error.message);
-      throw new Error('Failed to fetch result from Judge0');
+      throw new Error(submissionMessages.judge0FetchFailed);
     }
   }
 
@@ -106,7 +107,7 @@ class Judge0Service {
       await new Promise((resolve) => setTimeout(resolve, intervalMs));
     }
 
-    throw new Error('Submission polling timeout');
+    throw new Error(submissionMessages.judge0Timeout);
   }
 
   /**

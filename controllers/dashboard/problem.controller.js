@@ -4,7 +4,7 @@
  */
 
 const problemService = require('../../services/dashboard/problem.service');
-const { PROBLEM_MESSAGES } = require('../../constant/problem');
+const { problemMessages } = require('../../constant/problem');
 
 /**
  * Create problem
@@ -16,7 +16,7 @@ const createProblem = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: PROBLEM_MESSAGES.CREATED,
+      message: problemMessages.created,
       data: problem,
     });
   } catch (error) {
@@ -39,7 +39,7 @@ const updateProblem = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: PROBLEM_MESSAGES.UPDATED,
+      message: problemMessages.updated,
       data: problem,
     });
   } catch (error) {
@@ -62,7 +62,7 @@ const deleteProblem = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: PROBLEM_MESSAGES.DELETED,
+      message: problemMessages.deleted,
     });
   } catch (error) {
     console.error('Delete problem controller error:', error);
@@ -137,7 +137,7 @@ const addTestCase = async (req, res) => {
 
     res.status(201).json({
       success: true,
-      message: PROBLEM_MESSAGES.TEST_CASE_ADDED,
+      message: problemMessages.testCaseAdded,
       data: testCase,
     });
   } catch (error) {
@@ -160,7 +160,7 @@ const updateTestCase = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: PROBLEM_MESSAGES.TEST_CASE_UPDATED,
+      message: problemMessages.testCaseUpdated,
       data: testCase,
     });
   } catch (error) {
@@ -183,7 +183,7 @@ const deleteTestCase = async (req, res) => {
 
     res.status(200).json({
       success: true,
-      message: PROBLEM_MESSAGES.TEST_CASE_DELETED,
+      message: problemMessages.testCaseDeleted,
     });
   } catch (error) {
     console.error('Delete test case controller error:', error);

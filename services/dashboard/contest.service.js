@@ -4,7 +4,7 @@
  */
 
 const axios = require('axios');
-const { CONTEST_STATUS, CONTEST_MESSAGES } = require('../../../constant/contest');
+const { contestStatus, contestMessages } = require('../../../constant/contest');
 
 const prismaServiceUrl = process.env.PRISMA_SERVICE_URL || 'http://localhost:3001';
 
@@ -18,7 +18,7 @@ const createContest = async (contestData, createdBy) => {
       {
         ...contestData,
         createdBy,
-        status: CONTEST_STATUS.DRAFT,
+        status: contestStatus.draft,
       },
       { headers: { 'Content-Type': 'application/json' } }
     );
@@ -38,8 +38,8 @@ const updateContest = async (contestId, updateData, userId) => {
     // Get current contest to check status
     const current = await getContestById(contestId);
 
-    if (current.status === CONTEST_STATUS.RUNNING || current.status === CONTEST_STATUS.ENDED) {
-      throw new Error(CONTEST_MESSAGES.CANNOT_MODIFY_STARTED);
+    if (current.status === contestStatus.running || current.status === contestStatus.ended) {
+      throw new Error(contestMessages.cannotModifyStarted);
     }
 
     const response = await axios.put(
@@ -62,8 +62,8 @@ const deleteContest = async (contestId, userId) => {
   try {
     const contest = await getContestById(contestId);
 
-    if (contest.status === CONTEST_STATUS.RUNNING) {
-      throw new Error(CONTEST_MESSAGES.CANNOT_DELETE_STARTED);
+    if (contest.status === contestStatus.running) {
+      throw new Error(contestMessages.cannotDeleteStarted);
     }
 
     await axios.delete(`${prismaServiceUrl}/api/contests/${contestId}`);
@@ -86,7 +86,7 @@ const getContestById = async (contestId, includeProblems = false) => {
     return response.data;
   } catch (error) {
     if (error.response?.status === 404) {
-      throw new Error(CONTEST_MESSAGES.NOT_FOUND);
+      throw new Error(contestMessages.notFound);
     }
     throw new Error(error.response?.data?.message || 'Failed to get contest');
   }
@@ -115,7 +115,7 @@ const getContests = async (filters) => {
     return response.data;
   } catch (error) {
     console.error('Get contests error:', error.response?.data || error.message);
-    throw new Error('Failed to get contests');
+    throw new Error(contestMessages.fetchContestsFailed);
   }
 };
 
@@ -126,8 +126,8 @@ const addProblemToContest = async (contestId, problemData) => {
   try {
     const contest = await getContestById(contestId);
 
-    if (contest.status === CONTEST_STATUS.RUNNING || contest.status === CONTEST_STATUS.ENDED) {
-      throw new Error(CONTEST_MESSAGES.CANNOT_MODIFY_STARTED);
+    if (contest.status === contestStatus.running || contest.status === contestStatus.ended) {
+      throw new Error(contestMessages.cannotModifyStarted);
     }
 
     const response = await axios.post(
@@ -187,7 +187,7 @@ const getContestParticipants = async (contestId, page = 1, limit = 50) => {
     return response.data;
   } catch (error) {
     console.error('Get participants error:', error.response?.data || error.message);
-    throw new Error('Failed to get participants');
+    throw new Error(contestMessages.fetchParticipantsFailed);
   }
 };
 
@@ -203,7 +203,7 @@ const getContestLeaderboard = async (contestId, page = 1, limit = 100) => {
     return response.data;
   } catch (error) {
     console.error('Get leaderboard error:', error.response?.data || error.message);
-    throw new Error('Failed to get leaderboard');
+    throw new Error(contestMessages.fetchLeaderboardFailed);
   }
 };
 

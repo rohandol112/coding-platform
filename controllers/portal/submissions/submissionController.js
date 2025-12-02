@@ -57,8 +57,9 @@ async function createSubmission(req, res) {
 async function getSubmission(req, res) {
   try {
     const { submissionId } = req.params;
+    const userId = req.user.id;
 
-    const submission = await submissionService.getSubmissionById(submissionId);
+    const submission = await submissionService.getSubmissionById(submissionId, userId);
 
     res.status(200).json(submission);
   } catch (error) {
@@ -66,6 +67,13 @@ async function getSubmission(req, res) {
 
     if (error.statusCode === 404) {
       return res.status(404).json({
+        success: false,
+        message: error.message,
+      });
+    }
+
+    if (error.statusCode === 403) {
+      return res.status(403).json({
         success: false,
         message: error.message,
       });

@@ -22,7 +22,7 @@ export const verifyOtpController = async (req, res) => {
       return res.status(400).json({ success: false, message: authMessages.validationError, errors: error.details.map(detail => ({ field: detail.path.join('.'), message: detail.message })) });
     }
     const result = await verifyPhoneOtp(value.phoneNumber, value.code, { firstName: value.firstName, lastName: value.lastName, email: value.email });
-    res.status(200).json({ success: true, message: 'Phone verification successful', data: result });
+    res.status(200).json({ success: true, message: authMessages.phoneVerificationSuccess, data: result });
   } catch (error) {
     res.status(401).json({ success: false, message: error.message });
   }

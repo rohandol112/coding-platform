@@ -7,6 +7,8 @@ import portalJwtAuthRoutes from './routes/portal/auth/jwt/jwtAuthRoutes.js';
 import dashboardGoogleAuthRoutes from './routes/dashboard/auth/google/googleAuthRoutes.js';
 import portalGoogleAuthRoutes from './routes/portal/auth/google/googleAuthRoutes.js';
 import portalPhoneAuthRoutes from './routes/portal/auth/phone/phoneAuthRoutes.js';
+import dashboardContestRoutes from './routes/dashboard/contest.routes.js';
+import dashboardProblemRoutes from './routes/dashboard/problem.routes.js';
 import { serverMessages } from './constant/messages.js';
 
 dotenv.config();
@@ -34,6 +36,8 @@ app.get('/health', (req, res) => {
 // API Routes - Dashboard (Admin)
 app.use('/api/dashboard/auth/jwt', dashboardJwtAuthRoutes);
 app.use('/api/dashboard/auth/google', dashboardGoogleAuthRoutes);
+app.use('/api/dashboard/contests', dashboardContestRoutes);
+app.use('/api/dashboard/problems', dashboardProblemRoutes);
 
 // API Routes - Portal (User)
 app.use('/api/portal/auth/jwt', portalJwtAuthRoutes);

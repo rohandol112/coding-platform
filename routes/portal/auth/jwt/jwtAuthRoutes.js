@@ -1,5 +1,5 @@
 import express from 'express';
-import { registerController, loginController, profileController, changePasswordController } from '../../../../controllers/portal/auth/jwt/jwtAuthController.js';
+import { registerController, loginController, profileController, changePasswordController, forgotPasswordController, resetPasswordController } from '../../../../controllers/portal/auth/jwt/jwtAuthController.js';
 
 const router = express.Router();
 
@@ -30,5 +30,19 @@ router.get('/profile', profileController);
  * @access  Private
  */
 router.put('/change-password', changePasswordController);
+
+/**
+ * @route   POST /api/portal/auth/jwt/forgot-password
+ * @desc    Request password reset email
+ * @access  Public
+ */
+router.post('/forgot-password', forgotPasswordController);
+
+/**
+ * @route   POST /api/portal/auth/jwt/reset-password
+ * @desc    Reset password with token
+ * @access  Public
+ */
+router.post('/reset-password', resetPasswordController);
 
 export default router;

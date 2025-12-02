@@ -40,27 +40,6 @@ build/
 
 ### .env file ##
 .env 
-/prisma-service/.env
-/prisma-service/node_modules/
-/prisma-service/dist/
-/prisma-service/build/
-/prisma-service/.turbo/
-/prisma-service/.next/
-/prisma-service/out/
-/prisma-service/.vercel/
-/prisma-service/vercel-build/
-/prisma-service/.expo/
-
-### Node.js ###
-node_modules/
-npm-debug.log
-yarn-error.log
-yarn-debug.log
-pnpm-debug.log
-dist/
-build/
-.next/
-out/    
 .env.local
 .env.development.local
 .env.test.local
@@ -105,4 +84,25 @@ logs/
 hs_err_pid*.log
 replay_pid*.log
 .dump
-*.hprof     
+*.hprof
+node_modules
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+.vscode/
+.cache/
+.webstorm/
+.idea/
+*.log
+*.tsbuildinfo
+turbo-output/
+!.turbo/cache/.gitkeep
+!.expo/cache/.gitkeep
+.expo/
+.expo-shared/
+.history/
+.cache/
+.webstorm/
+.idea/

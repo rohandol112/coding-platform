@@ -1,35 +1,50 @@
 {
   "name": "coding-platform-backend",
   "version": "1.0.0",
-  "description": "Coding platform backend with JWT auth, Prisma, and PostgreSQL",
+  "description": "Coding platform backend with JWT auth, Prisma, PostgreSQL, Kafka, RabbitMQ, and Judge0",
   "main": "server.js",
-  "type": "module",
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
+    "prisma:service": "node prisma-service/index.js",
+    "prisma:service:dev": "nodemon prisma-service/index.js",
+    "worker:judge": "node workers/judgeWorker.js",
+    "worker:judge:dev": "nodemon workers/judgeWorker.js",
     "prisma:generate": "npx prisma generate",
     "prisma:push": "npx prisma db push",
-    "prisma:studio": "npx prisma studio"
+    "prisma:studio": "npx prisma studio",
+    "prisma:migrate": "npx prisma migrate dev"
   },
   "keywords": [
     "express",
     "jwt",
     "prisma",
     "postgresql",
-    "authentication"
+    "authentication",
+    "kafka",
+    "rabbitmq",
+    "judge0",
+    "code-execution"
   ],
   "author": "",
   "license": "ISC",
   "dependencies": {
     "@prisma/client": "^6.19.0",
+    "amqplib": "^0.10.4",
+    "axios": "^1.7.9",
     "bcrypt": "^5.1.1",
     "cors": "^2.8.5",
     "dotenv": "^16.4.5",
     "express": "^4.21.2",
     "google-auth-library": "^9.14.2",
+    "ioredis": "^5.4.1",
     "joi": "^17.13.3",
     "jsonwebtoken": "^9.0.2",
-    "twilio": "^5.3.5"
+    "kafkajs": "^2.2.4",
+    "nodemailer": "^6.9.8",
+    "socket.io": "^4.8.1",
+    "twilio": "^5.3.5",
+    "uuid": "^11.0.3"
   },
   "devDependencies": {
     "nodemon": "^3.1.9",

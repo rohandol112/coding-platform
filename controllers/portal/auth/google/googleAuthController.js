@@ -19,7 +19,7 @@ export const googleCallbackController = async (req, res) => {
       return res.status(400).json({ success: false, message: authMessages.validationError, errors: error.details.map(detail => ({ field: detail.path.join('.'), message: detail.message })) });
     }
     const result = await googleLogin(value.code);
-    res.status(200).json({ success: true, message: 'Google login successful', data: result });
+    res.status(200).json({ success: true, message: authMessages.googleLoginSuccess, data: result });
   } catch (error) {
     res.status(401).json({ success: false, message: error.message });
   }
@@ -32,7 +32,7 @@ export const googleTokenController = async (req, res) => {
       return res.status(400).json({ success: false, message: authMessages.validationError, errors: error.details.map(detail => ({ field: detail.path.join('.'), message: detail.message })) });
     }
     const result = await googleTokenLogin(value.idToken);
-    res.status(200).json({ success: true, message: 'Google login successful', data: result });
+    res.status(200).json({ success: true, message: authMessages.googleLoginSuccess, data: result });
   } catch (error) {
     res.status(401).json({ success: false, message: error.message });
   }

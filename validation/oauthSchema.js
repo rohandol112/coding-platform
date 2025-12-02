@@ -1,9 +1,15 @@
 import Joi from 'joi';
+import { authMessages } from '../constant/messages.js';
 
-export const googleCodeSchema = Joi.object({ code: Joi.string().required().messages({ 'any.required': 'Authorization code is required', 'string.empty': 'Authorization code is required' }) });
+/**
+ * @typedef {import('../types/index.js').PhoneOtpInput} PhoneOtpInput
+ * @typedef {import('../types/index.js').PhoneOtpVerifyInput} PhoneOtpVerifyInput
+ */
 
-export const googleTokenSchema = Joi.object({ idToken: Joi.string().required().messages({ 'any.required': 'Google ID token is required', 'string.empty': 'Google ID token is required' }) });
+export const googleCodeSchema = Joi.object({ code: Joi.string().required().messages({ 'any.required': authMessages.authCodeRequired, 'string.empty': authMessages.authCodeRequired }) });
 
-export const phoneOtpSendSchema = Joi.object({ phoneNumber: Joi.string().pattern(/^\+?[1-9]\d{1,14}$/).required().messages({ 'string.pattern.base': 'Please provide a valid phone number in E.164 format', 'any.required': 'Phone number is required', 'string.empty': 'Phone number is required' }) });
+export const googleTokenSchema = Joi.object({ idToken: Joi.string().required().messages({ 'any.required': authMessages.googleTokenRequired, 'string.empty': authMessages.googleTokenRequired }) });
 
-export const phoneOtpVerifySchema = Joi.object({ phoneNumber: Joi.string().pattern(/^\+?[1-9]\d{1,14}$/).required().messages({ 'string.pattern.base': 'Please provide a valid phone number in E.164 format', 'any.required': 'Phone number is required', 'string.empty': 'Phone number is required' }), code: Joi.string().length(6).pattern(/^\d+$/).required().messages({ 'string.length': 'OTP must be 6 digits', 'string.pattern.base': 'OTP must contain only numbers', 'any.required': 'OTP code is required', 'string.empty': 'OTP code is required' }), firstName: Joi.string().min(2).max(50).optional().trim().messages({ 'string.min': 'First name must be at least 2 characters', 'string.max': 'First name must not exceed 50 characters' }), lastName: Joi.string().min(2).max(50).optional().trim().messages({ 'string.min': 'Last name must be at least 2 characters', 'string.max': 'Last name must not exceed 50 characters' }), email: Joi.string().email().optional().lowercase().trim().messages({ 'string.email': 'Please provide a valid email address' }) });
+export const phoneOtpSendSchema = Joi.object({ phoneNumber: Joi.string().pattern(/^\+?[1-9]\d{1,14}$/).required().messages({ 'string.pattern.base': authMessages.phoneInvalidE164, 'any.required': authMessages.phoneRequired, 'string.empty': authMessages.phoneRequired }) });
+
+export const phoneOtpVerifySchema = Joi.object({ phoneNumber: Joi.string().pattern(/^\+?[1-9]\d{1,14}$/).required().messages({ 'string.pattern.base': authMessages.phoneInvalidE164, 'any.required': authMessages.phoneRequired, 'string.empty': authMessages.phoneRequired }), code: Joi.string().length(6).pattern(/^\d+$/).required().messages({ 'string.length': authMessages.otpLength, 'string.pattern.base': authMessages.otpMustBeNumeric, 'any.required': authMessages.otpRequired, 'string.empty': authMessages.otpRequired }), firstName: Joi.string().min(2).max(50).optional().trim().messages({ 'string.min': authMessages.firstNameMinLength, 'string.max': authMessages.firstNameMaxLength }), lastName: Joi.string().min(2).max(50).optional().trim().messages({ 'string.min': authMessages.lastNameMinLength, 'string.max': authMessages.lastNameMaxLength }), email: Joi.string().email().optional().lowercase().trim().messages({ 'string.email': authMessages.emailInvalid }) });

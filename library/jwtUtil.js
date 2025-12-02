@@ -1,11 +1,15 @@
 import jwt from 'jsonwebtoken';
 import dotenv from 'dotenv';
 
+/**
+ * @typedef {import('../types/index.js').JwtPayload} JwtPayload
+ */
+
 dotenv.config();
 
 /**
  * Generate a JWT token
- * @param {Object} payload - User data to encode in token (email, role, id)
+ * @param {JwtPayload} payload - User data to encode in token (id, email, role)
  * @returns {string} JWT token
  */
 export const generateToken = (payload) => {
@@ -15,7 +19,7 @@ export const generateToken = (payload) => {
 /**
  * Validate and decode a JWT token
  * @param {string} token - JWT token to validate
- * @returns {Object|null} Decoded payload or null if invalid
+ * @returns {JwtPayload|null} Decoded payload or null if invalid
  */
 export const validateToken = (token) => {
   try {
@@ -38,7 +42,7 @@ export const extractEmail = (token) => {
 /**
  * Extract role from token
  * @param {string} token - JWT token
- * @returns {string|null} Role or null
+ * @returns {('USER'|'ADMIN'|'MODERATOR')|null} Role or null
  */
 export const extractRole = (token) => {
   const decoded = validateToken(token);

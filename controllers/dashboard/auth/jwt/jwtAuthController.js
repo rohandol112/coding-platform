@@ -1,5 +1,5 @@
-import { register, login, getUserFromToken } from '../../../../services/dashboard/auth/jwt/jwtAuthService.js';
-import { registerSchema, loginSchema } from '../../../../validation/jwtAuthSchema.js';
+import { register, login, getUserFromToken, forgotPassword, resetPassword } from '../../../../services/dashboard/auth/jwt/jwtAuthService.js';
+import { registerSchema, loginSchema, emailSchema, resetPasswordSchema } from '../../../../validation/jwtAuthSchema.js';
 import { authMessages } from '../../../../constant/messages.js';
 
 /**
@@ -48,5 +48,37 @@ export const profileController = async (req, res) => {
     res.status(200).json({ success: true, data: user });
   } catch (error) {
     res.status(401).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * Handle forgot password request (Dashboard)
+ */
+export const forgotPasswordController = async (req, res) => {
+  try {
+    const { error, value } = emailSchema.validate(req.body, { abortEarly: false, stripUnknown: true });
+    if (error) {
+      return res.status(400).json({ success: false, message: authMessages.validationError, errors: error.details.map(detail => ({ field: detail.path.join('.'), message: detail.message })) });
+    }
+    const result = await forgotPassword(value.email);
+    res.status(200).json({ success: true, message: result.message });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
+  }
+};
+
+/**
+ * Handle password reset (Dashboard)
+ */
+export const resetPasswordController = async (req, res) => {
+  try {
+    const { error, value } = resetPasswordSchema.validate(req.body, { abortEarly: false, stripUnknown: true });
+    if (error) {
+      return res.status(400).json({ success: false, message: authMessages.validationError, errors: error.details.map(detail => ({ field: detail.path.join('.'), message: detail.message })) });
+    }
+    const result = await resetPassword(value.token, value.newPassword);
+    res.status(200).json({ success: true, message: result.message });
+  } catch (error) {
+    res.status(400).json({ success: false, message: error.message });
   }
 };

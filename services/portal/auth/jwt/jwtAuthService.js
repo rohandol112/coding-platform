@@ -1,13 +1,24 @@
 import bcrypt from 'bcrypt';
+import crypto from 'crypto';
 import prisma from '../../../../library/prisma.js';
 import { generateToken, validateToken } from '../../../../library/jwtUtil.js';
+import { sendPasswordResetEmail } from '../../../../library/emailService.js';
 import { authMessages } from '../../../../constant/messages.js';
 import { authProviders, userRoles } from '../../../../constant/authConstants.js';
 
 /**
+ * @typedef {import('../../../../types/index.js').RegisterInput} RegisterInput
+ * @typedef {import('../../../../types/index.js').LoginInput} LoginInput
+ * @typedef {import('../../../../types/index.js').ChangePasswordInput} ChangePasswordInput
+ * @typedef {import('../../../../types/index.js').AuthResponse} AuthResponse
+ * @typedef {import('../../../../types/index.js').UserData} UserData
+ */
+
+/**
  * Register a new user (Portal)
- * @param {Object} userData - User registration data
- * @returns {Promise<Object>} Created user and token
+ * @param {RegisterInput} userData - User registration data
+ * @returns {Promise<AuthResponse>} Created user and token
+ * @throws {Error} If user/username/phone already exists
  */
 export const register = async (userData) => {
   const { email, password, firstName, lastName, username, phone } = userData;
@@ -75,8 +86,9 @@ export const register = async (userData) => {
 
 /**
  * Login user (Portal)
- * @param {Object} credentials - Login credentials
- * @returns {Promise<Object>} User and token
+ * @param {LoginInput} credentials - Login credentials (email, username, or phone)
+ * @returns {Promise<AuthResponse>} User and token
+ * @throws {Error} If credentials are invalid or account is deactivated
  */
 export const login = async (credentials) => {
   const { identifier, password } = credentials;
@@ -144,7 +156,8 @@ export const login = async (credentials) => {
 /**
  * Get user from token (Portal)
  * @param {string} token - JWT token
- * @returns {Promise<Object>} User profile
+ * @returns {Promise<UserData>} User profile
+ * @throws {Error} If token is invalid, user not found, or account is deactivated
  */
 export const getUserFromToken = async (token) => {
   const decoded = validateToken(token);
@@ -181,10 +194,11 @@ export const getUserFromToken = async (token) => {
 };
 
 /**
- * Change password
+ * Change password (Portal)
  * @param {string} userId - User ID
- * @param {Object} passwordData - Old and new passwords
- * @returns {Promise<Object>} Success message
+ * @param {ChangePasswordInput} passwordData - Old and new passwords
+ * @returns {Promise<{message: string}>} Success message
+ * @throws {Error} If user not found or old password is incorrect
  */
 export const changePassword = async (userId, passwordData) => {
   const { oldPassword, newPassword } = passwordData;
@@ -216,4 +230,51 @@ export const changePassword = async (userId, passwordData) => {
   return {
     message: authMessages.passwordChanged
   };
+};
+
+/**
+ * Request password reset (Portal)
+ * @param {string} email - User email
+ * @returns {Promise<{message: string}>} Success message
+ * @throws {Error} If user not found or is OAuth account
+ */
+export const forgotPassword = async (email) => {
+  const user = await prisma.user.findUnique({ where: { email } });
+  if (!user) {
+    throw new Error(authMessages.userNotFound);
+  }
+  if (user.provider !== authProviders.local) {
+    throw new Error(authMessages.cannotResetOAuthPassword);
+  }
+  const resetToken = crypto.randomBytes(32).toString('hex');
+  const resetTokenHash = await bcrypt.hash(resetToken, 10);
+  const resetTokenExpiry = new Date(Date.now() + 3600000);
+  await prisma.user.update({ where: { id: user.id }, data: { resetToken: resetTokenHash, resetTokenExpiry } });
+  await sendPasswordResetEmail(user.email, resetToken, user.firstName);
+  return { message: authMessages.resetLinkSent };
+};
+
+/**
+ * Reset password with token (Portal)
+ * @param {string} token - Reset token from email
+ * @param {string} newPassword - New password
+ * @returns {Promise<{message: string}>} Success message
+ * @throws {Error} If token is invalid or expired
+ */
+export const resetPassword = async (token, newPassword) => {
+  const users = await prisma.user.findMany({ where: { resetToken: { not: null }, resetTokenExpiry: { gte: new Date() } } });
+  let user = null;
+  for (const u of users) {
+    const isValid = await bcrypt.compare(token, u.resetToken);
+    if (isValid) {
+      user = u;
+      break;
+    }
+  }
+  if (!user) {
+    throw new Error(authMessages.invalidResetToken);
+  }
+  const newPasswordHash = await bcrypt.hash(newPassword, 10);
+  await prisma.user.update({ where: { id: user.id }, data: { passwordHash: newPasswordHash, resetToken: null, resetTokenExpiry: null } });
+  return { message: authMessages.passwordReset };
 };

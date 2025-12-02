@@ -1,5 +1,5 @@
-import { register, login, getUserFromToken, changePassword } from '../../../../services/portal/auth/jwt/jwtAuthService.js';
-import { registerSchema, loginSchema, changePasswordSchema } from '../../../../validation/portalAuthSchema.js';
+import { register, login, getUserFromToken, changePassword, forgotPassword, resetPassword } from '../../../../services/portal/auth/jwt/jwtAuthService.js';
+import { registerSchema, loginSchema, changePasswordSchema, emailSchema, resetPasswordSchema } from '../../../../validation/portalAuthSchema.js';
 import { authMessages } from '../../../../constant/messages.js';
 
 /**

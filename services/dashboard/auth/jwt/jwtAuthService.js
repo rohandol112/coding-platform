@@ -1,9 +1,8 @@
 import bcrypt from 'bcrypt';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../../../library/prisma.js';
 import { generateToken, validateToken } from '../../../../library/jwtUtil.js';
 import { authMessages } from '../../../../constant/messages.js';
-
-const prisma = new PrismaClient();
+import { authProviders, userRoles } from '../../../../constant/authConstants.js';
 
 /**
  * Register a new user
@@ -32,8 +31,8 @@ export const register = async (userData) => {
       passwordHash: hashedPassword,
       firstName,
       lastName,
-      role: role || 'USER',
-      provider: 'LOCAL'
+      role: role || userRoles.user,
+      provider: authProviders.local
     }
   });
 
@@ -75,7 +74,7 @@ export const login = async (credentials) => {
 
   // Check if user has password (not OAuth user)
   if (!user.passwordHash) {
-    throw new Error('Please use Google login for this account');
+    throw new Error(authMessages.useGoogleLogin);
   }
 
   // Verify password

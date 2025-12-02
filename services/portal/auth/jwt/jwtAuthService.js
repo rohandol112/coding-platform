@@ -1,9 +1,8 @@
 import bcrypt from 'bcrypt';
-import { PrismaClient } from '@prisma/client';
+import prisma from '../../../../library/prisma.js';
 import { generateToken, validateToken } from '../../../../library/jwtUtil.js';
 import { authMessages } from '../../../../constant/messages.js';
-
-const prisma = new PrismaClient();
+import { authProviders, userRoles } from '../../../../constant/authConstants.js';
 
 /**
  * Register a new user (Portal)
@@ -29,10 +28,10 @@ export const register = async (userData) => {
       throw new Error(authMessages.userExists);
     }
     if (existingUser.username === username) {
-      throw new Error('Username already taken');
+      throw new Error(authMessages.usernameExists);
     }
     if (existingUser.phone === phone) {
-      throw new Error('Phone number already registered');
+      throw new Error(authMessages.phoneExists);
     }
   }
 
@@ -48,8 +47,8 @@ export const register = async (userData) => {
       lastName,
       username,
       phone,
-      role: 'USER',
-      provider: 'LOCAL'
+      role: userRoles.user,
+      provider: authProviders.local
     }
   });
 
@@ -99,12 +98,12 @@ export const login = async (credentials) => {
 
   // Check if user is active
   if (!user.isActive) {
-    throw new Error('Account is deactivated');
+    throw new Error(authMessages.accountDeactivated);
   }
 
   // Check if user has password (not OAuth user)
   if (!user.passwordHash) {
-    throw new Error('Please use Google or Phone login for this account');
+    throw new Error(authMessages.useGoogleOrPhoneLogin);
   }
 
   // Verify password
@@ -163,7 +162,7 @@ export const getUserFromToken = async (token) => {
   }
 
   if (!user.isActive) {
-    throw new Error('Account is deactivated');
+    throw new Error(authMessages.accountDeactivated);
   }
 
   return {
@@ -202,7 +201,7 @@ export const changePassword = async (userId, passwordData) => {
   const isPasswordValid = await bcrypt.compare(oldPassword, user.passwordHash);
 
   if (!isPasswordValid) {
-    throw new Error('Current password is incorrect');
+    throw new Error(authMessages.incorrectPassword);
   }
 
   // Hash new password
@@ -215,6 +214,6 @@ export const changePassword = async (userId, passwordData) => {
   });
 
   return {
-    message: 'Password changed successfully'
+    message: authMessages.passwordChanged
   };
 };

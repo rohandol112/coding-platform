@@ -3,6 +3,10 @@ import dotenv from 'dotenv';
 
 dotenv.config();
 
+if (!process.env.GOOGLE_CLIENT_ID || !process.env.GOOGLE_CLIENT_SECRET || !process.env.GOOGLE_REDIRECT_URI) {
+  throw new Error('Missing required Google OAuth environment variables: GOOGLE_CLIENT_ID, GOOGLE_CLIENT_SECRET, GOOGLE_REDIRECT_URI');
+}
+
 const client = new OAuth2Client(process.env.GOOGLE_CLIENT_ID, process.env.GOOGLE_CLIENT_SECRET, process.env.GOOGLE_REDIRECT_URI);
 
 export const getGoogleAuthUrl = () => {
@@ -17,6 +21,7 @@ export const getGoogleUserInfo = async (code) => {
     const payload = ticket.getPayload();
     return { email: payload.email, firstName: payload.given_name || '', lastName: payload.family_name || '', avatar: payload.picture || null, googleId: payload.sub };
   } catch (error) {
+    console.error('Google token verification failed:', error.message);
     throw new Error('Failed to verify Google token');
   }
 };
@@ -27,6 +32,7 @@ export const verifyGoogleToken = async (token) => {
     const payload = ticket.getPayload();
     return { email: payload.email, firstName: payload.given_name || '', lastName: payload.family_name || '', avatar: payload.picture || null, googleId: payload.sub };
   } catch (error) {
-    return null;
+    console.error('Google token verification failed:', error.message);
+    throw new Error('Failed to verify Google token');
   }
 };

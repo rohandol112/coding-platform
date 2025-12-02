@@ -10,6 +10,7 @@ export const userRoles = {
   moderator: 'MODERATOR'
 };
 
+// These values should match your Twilio Verify service configuration
 export const otpExpiration = 10 * 60 * 1000; // 10 minutes in milliseconds
 export const otpLength = 6;
 export const maxOtpAttempts = 5;

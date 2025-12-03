@@ -9,6 +9,10 @@ import portalGoogleAuthRoutes from './routes/portal/auth/google/googleAuthRoutes
 import portalPhoneAuthRoutes from './routes/portal/auth/phone/phoneAuthRoutes.js';
 import dashboardContestRoutes from './routes/dashboard/contest.routes.js';
 import dashboardProblemRoutes from './routes/dashboard/problem.routes.js';
+import dashboardUserRoutes from './routes/dashboard/user.routes.js';
+import dashboardAnalyticsRoutes from './routes/dashboard/analytics.routes.js';
+import dashboardSubmissionRoutes from './routes/dashboard/submissionAdmin.routes.js';
+import dashboardEditorialRoutes from './routes/dashboard/editorial.routes.js';
 import { serverMessages } from './constant/messages.js';
 
 dotenv.config();
@@ -38,6 +42,10 @@ app.use('/api/dashboard/auth/jwt', dashboardJwtAuthRoutes);
 app.use('/api/dashboard/auth/google', dashboardGoogleAuthRoutes);
 app.use('/api/dashboard/contests', dashboardContestRoutes);
 app.use('/api/dashboard/problems', dashboardProblemRoutes);
+app.use('/api/dashboard/users', dashboardUserRoutes);
+app.use('/api/dashboard/analytics', dashboardAnalyticsRoutes);
+app.use('/api/dashboard/submissions', dashboardSubmissionRoutes);
+app.use('/api/dashboard/editorials', dashboardEditorialRoutes);
 
 // API Routes - Portal (User)
 app.use('/api/portal/auth/jwt', portalJwtAuthRoutes);

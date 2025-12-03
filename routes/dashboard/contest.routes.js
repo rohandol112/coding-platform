@@ -39,4 +39,7 @@ router.patch('/:contestId/status', validate(updateContestStatusSchema), contestC
 router.get('/:contestId/participants', contestController.getParticipants);
 router.get('/:contestId/leaderboard', contestController.getLeaderboard);
 
+// Contest Clone
+router.post('/:contestId/clone', contestController.cloneContest);
+
 module.exports = router;

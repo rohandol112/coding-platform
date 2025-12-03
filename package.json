@@ -7,8 +7,6 @@
   "scripts": {
     "start": "node server.js",
     "dev": "nodemon server.js",
-    "prisma:service": "node prisma-service/index.js",
-    "prisma:service:dev": "nodemon prisma-service/index.js",
     "worker:judge": "node workers/judgeWorker.js",
     "worker:judge:dev": "nodemon workers/judgeWorker.js",
     "prisma:generate": "npx prisma generate",

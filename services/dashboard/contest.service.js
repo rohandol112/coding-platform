@@ -1,213 +1,101 @@
 /**
  * Contest Service - Dashboard
- * Handles contest management operations for administrators
+ * Thin wrapper that delegates to domain use cases
  */
 
-const axios = require('axios');
-const { contestStatus, contestMessages } = require('../../../constant/contest');
-
-const prismaServiceUrl = process.env.PRISMA_SERVICE_URL || 'http://localhost:3001';
+import {
+  createContestUseCase,
+  updateContestUseCase,
+  deleteContestUseCase,
+  getContestUseCase,
+  getContestsUseCase,
+  addProblemToContestUseCase,
+  removeProblemFromContestUseCase,
+  updateContestStatusUseCase,
+  getContestParticipantsUseCase,
+  getContestLeaderboardUseCase,
+  cloneContestUseCase,
+} from '../../library/domain/contest/contestUseCase.js';
+import kafkaService from '../messaging/kafkaService.js';
 
 /**
- * Create a new contest
+ * Create a new contest (delegates to use case)
  */
 const createContest = async (contestData, createdBy) => {
-  try {
-    const response = await axios.post(
-      `${prismaServiceUrl}/api/contests`,
-      {
-        ...contestData,
-        createdBy,
-        status: contestStatus.draft,
-      },
-      { headers: { 'Content-Type': 'application/json' } }
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error('Create contest error:', error.response?.data || error.message);
-    throw new Error(error.response?.data?.message || 'Failed to create contest');
-  }
+  return await createContestUseCase.execute(contestData, createdBy);
 };
 
 /**
- * Update contest
+ * Update contest (delegates to use case)
  */
 const updateContest = async (contestId, updateData, userId) => {
-  try {
-    // Get current contest to check status
-    const current = await getContestById(contestId);
-
-    if (current.status === contestStatus.running || current.status === contestStatus.ended) {
-      throw new Error(contestMessages.cannotModifyStarted);
-    }
-
-    const response = await axios.put(
-      `${prismaServiceUrl}/api/contests/${contestId}`,
-      updateData,
-      { headers: { 'Content-Type': 'application/json' } }
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error('Update contest error:', error.response?.data || error.message);
-    throw new Error(error.response?.data?.message || error.message);
-  }
+  return await updateContestUseCase.execute(contestId, updateData, userId);
 };
 
 /**
- * Delete contest
+ * Delete contest (delegates to use case)
  */
 const deleteContest = async (contestId, userId) => {
-  try {
-    const contest = await getContestById(contestId);
-
-    if (contest.status === contestStatus.running) {
-      throw new Error(contestMessages.cannotDeleteStarted);
-    }
-
-    await axios.delete(`${prismaServiceUrl}/api/contests/${contestId}`);
-  } catch (error) {
-    console.error('Delete contest error:', error.response?.data || error.message);
-    throw new Error(error.response?.data?.message || error.message);
-  }
+  return await deleteContestUseCase.execute(contestId, userId);
 };
 
 /**
- * Get contest by ID
+ * Get contest by ID (delegates to use case)
  */
 const getContestById = async (contestId, includeProblems = false) => {
-  try {
-    const params = includeProblems ? '?includeProblems=true' : '';
-    const response = await axios.get(
-      `${prismaServiceUrl}/api/contests/${contestId}${params}`
-    );
-
-    return response.data;
-  } catch (error) {
-    if (error.response?.status === 404) {
-      throw new Error(contestMessages.notFound);
-    }
-    throw new Error(error.response?.data?.message || 'Failed to get contest');
-  }
+  return await getContestUseCase.execute(contestId, { includeProblems });
 };
 
 /**
- * Get all contests with filters
+ * Get all contests with filters (delegates to use case)
  */
 const getContests = async (filters) => {
-  try {
-    const params = new URLSearchParams({
-      page: filters.page?.toString() || '1',
-      limit: filters.limit?.toString() || '20',
-    });
-
-    if (filters.status) params.append('status', filters.status);
-    if (filters.type) params.append('type', filters.type);
-    if (filters.search) params.append('search', filters.search);
-    if (filters.sortBy) params.append('sortBy', filters.sortBy);
-    if (filters.sortOrder) params.append('sortOrder', filters.sortOrder);
-
-    const response = await axios.get(
-      `${prismaServiceUrl}/api/contests?${params.toString()}`
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error('Get contests error:', error.response?.data || error.message);
-    throw new Error(contestMessages.fetchContestsFailed);
-  }
+  return await getContestsUseCase.execute(filters);
 };
 
 /**
- * Add problem to contest
+ * Add problem to contest (delegates to use case)
  */
 const addProblemToContest = async (contestId, problemData) => {
-  try {
-    const contest = await getContestById(contestId);
-
-    if (contest.status === contestStatus.running || contest.status === contestStatus.ended) {
-      throw new Error(contestMessages.cannotModifyStarted);
-    }
-
-    const response = await axios.post(
-      `${prismaServiceUrl}/api/contests/${contestId}/problems`,
-      problemData,
-      { headers: { 'Content-Type': 'application/json' } }
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error('Add problem to contest error:', error.response?.data || error.message);
-    throw new Error(error.response?.data?.message || error.message);
-  }
+  return await addProblemToContestUseCase.execute(contestId, problemData);
 };
 
 /**
- * Remove problem from contest
+ * Remove problem from contest (delegates to use case)
  */
 const removeProblemFromContest = async (contestId, problemId) => {
-  try {
-    await axios.delete(
-      `${prismaServiceUrl}/api/contests/${contestId}/problems/${problemId}`
-    );
-  } catch (error) {
-    console.error('Remove problem from contest error:', error.response?.data || error.message);
-    throw new Error(error.response?.data?.message || 'Failed to remove problem');
-  }
+  return await removeProblemFromContestUseCase.execute(contestId, problemId);
 };
 
 /**
- * Update contest status
+ * Update contest status (delegates to use case)
  */
 const updateContestStatus = async (contestId, status) => {
-  try {
-    const response = await axios.patch(
-      `${prismaServiceUrl}/api/contests/${contestId}/status`,
-      { status },
-      { headers: { 'Content-Type': 'application/json' } }
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error('Update contest status error:', error.response?.data || error.message);
-    throw new Error(error.response?.data?.message || 'Failed to update status');
-  }
+  return await updateContestStatusUseCase.execute(contestId, status);
 };
 
 /**
- * Get contest participants
+ * Get contest participants (delegates to use case)
  */
 const getContestParticipants = async (contestId, page = 1, limit = 50) => {
-  try {
-    const response = await axios.get(
-      `${prismaServiceUrl}/api/contests/${contestId}/participants?page=${page}&limit=${limit}`
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error('Get participants error:', error.response?.data || error.message);
-    throw new Error(contestMessages.fetchParticipantsFailed);
-  }
+  return await getContestParticipantsUseCase.execute(contestId, { page, limit });
 };
 
 /**
- * Get contest leaderboard
+ * Get contest leaderboard (delegates to use case)
  */
 const getContestLeaderboard = async (contestId, page = 1, limit = 100) => {
-  try {
-    const response = await axios.get(
-      `${prismaServiceUrl}/api/contests/${contestId}/leaderboard?page=${page}&limit=${limit}`
-    );
-
-    return response.data;
-  } catch (error) {
-    console.error('Get leaderboard error:', error.response?.data || error.message);
-    throw new Error(contestMessages.fetchLeaderboardFailed);
-  }
+  return await getContestLeaderboardUseCase.execute(contestId, { page, limit });
 };
 
-module.exports = {
+/**
+ * Clone contest (delegates to use case)
+ */
+const cloneContest = async (contestId, newSlug, newTitle, userId) => {
+  return await cloneContestUseCase.execute(contestId, newSlug, newTitle, userId);
+};
+
+export default {
   createContest,
   updateContest,
   deleteContest,
@@ -218,4 +106,5 @@ module.exports = {
   updateContestStatus,
   getContestParticipants,
   getContestLeaderboard,
+  cloneContest,
 };

@@ -55,7 +55,7 @@ const submissionMessages = {
   unauthorized: 'Not authorized to access this submission',
 };
 
-module.exports = {
+export {
   submissionStatus,
   submissionMessages,
 };

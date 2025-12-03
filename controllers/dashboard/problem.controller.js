@@ -3,8 +3,8 @@
  * HTTP request handlers for problem management
  */
 
-const problemService = require('../../services/dashboard/problem.service');
-const { problemMessages } = require('../../constant/problem');
+import problemService from '../../services/dashboard/problem.service.js';
+import { problemMessages } from '../../constant/problem.js';
 
 /**
  * Create problem
@@ -216,7 +216,7 @@ const getTestCases = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   createProblem,
   updateProblem,
   deleteProblem,

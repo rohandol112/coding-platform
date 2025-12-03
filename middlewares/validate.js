@@ -3,7 +3,7 @@
  * Validates request data using Joi schemas
  */
 
-const { submissionMessages } = require('../constant/submission');
+import { submissionMessages } from '../constant/submission.js';
 
 /**
  * Validate middleware factory
@@ -40,4 +40,4 @@ const validate = (schema, property = 'body') => {
   };
 };
 
-module.exports = { validate };
+export { validate };

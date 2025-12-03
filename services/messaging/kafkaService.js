@@ -2,8 +2,8 @@
  * @fileoverview Kafka messaging service for submission events
  */
 
-const { Kafka } = require('kafkajs');
-const { KAFKA_TOPICS } = require('../../../constant/judge');
+import { Kafka } from 'kafkajs';
+import { KAFKA_TOPICS } from '../../constant/judge.js';
 
 /** @typedef {import('../../../types/submissions').KafkaSubmissionCreatedEvent} KafkaSubmissionCreatedEvent */
 /** @typedef {import('../../../types/submissions').KafkaSubmissionFinishedEvent} KafkaSubmissionFinishedEvent */
@@ -125,4 +125,4 @@ class KafkaService {
 // Singleton instance
 const kafkaService = new KafkaService();
 
-module.exports = kafkaService;
+export default kafkaService;

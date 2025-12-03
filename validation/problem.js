@@ -2,8 +2,8 @@
  * Problem Validation Schemas
  */
 
-const Joi = require('joi');
-const { problemDifficulty, problemLimits, testCaseLimits, problemMessages } = require('../constant/problem');
+import Joi from 'joi';
+import { problemDifficulty, problemLimits, testCaseLimits, problemMessages } from '../constant/problem.js';
 
 // Create Problem Schema
 const createProblemSchema = Joi.object({
@@ -340,7 +340,7 @@ const getProblemsSchema = Joi.object({
   sortOrder: Joi.string().valid('asc', 'desc').default('desc'),
 });
 
-module.exports = {
+export {
   createProblemSchema,
   updateProblemSchema,
   createTestCaseSchema,

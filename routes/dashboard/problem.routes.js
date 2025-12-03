@@ -3,19 +3,20 @@
  * Admin routes for problem management
  */
 
-const express = require('express');
-const router = express.Router();
-const problemController = require('../../controllers/dashboard/problem.controller');
-const { authenticateJWT } = require('../../middlewares/auth');
-const { isAdmin } = require('../../middlewares/isAdmin');
-const { validate } = require('../../middlewares/validate');
-const {
+import express from 'express';
+import problemController from '../../controllers/dashboard/problem.controller.js';
+import { authenticateJWT } from '../../middlewares/auth.js';
+import { isAdmin } from '../../middlewares/isAdmin.js';
+import { validate } from '../../middlewares/validate.js';
+import {
   createProblemSchema,
   updateProblemSchema,
   createTestCaseSchema,
   updateTestCaseSchema,
   getProblemsSchema,
-} = require('../../validation/problem');
+} from '../../validation/problem.js';
+
+const router = express.Router();
 
 // Apply authentication and admin middleware to all routes
 router.use(authenticateJWT);
@@ -34,4 +35,4 @@ router.get('/:problemId/testcases', problemController.getTestCases);
 router.put('/testcases/:testCaseId', validate(updateTestCaseSchema), problemController.updateTestCase);
 router.delete('/testcases/:testCaseId', problemController.deleteTestCase);
 
-module.exports = router;
+export default router;

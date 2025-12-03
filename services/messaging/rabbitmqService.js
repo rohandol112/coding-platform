@@ -2,8 +2,8 @@
  * @fileoverview RabbitMQ messaging service for judge jobs
  */
 
-const amqp = require('amqplib');
-const { RABBITMQ_QUEUES } = require('../../../constant/judge');
+import amqp from 'amqplib';
+import { RABBITMQ_QUEUES } from '../../constant/judge.js';
 
 /** @typedef {import('../../../types/submissions').RabbitMQJudgeJob} RabbitMQJudgeJob */
 
@@ -115,4 +115,4 @@ class RabbitMQService {
 // Singleton instance
 const rabbitmqService = new RabbitMQService();
 
-module.exports = rabbitmqService;
+export default rabbitmqService;

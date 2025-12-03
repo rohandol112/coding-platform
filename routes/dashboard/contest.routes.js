@@ -3,19 +3,20 @@
  * Admin routes for contest management
  */
 
-const express = require('express');
-const router = express.Router();
-const contestController = require('../../controllers/dashboard/contest.controller');
-const { authenticateJWT } = require('../../middlewares/auth');
-const { isAdmin } = require('../../middlewares/isAdmin');
-const { validate } = require('../../middlewares/validate');
-const {
+import express from 'express';
+import contestController from '../../controllers/dashboard/contest.controller.js';
+import { authenticateJWT } from '../../middlewares/auth.js';
+import { isAdmin } from '../../middlewares/isAdmin.js';
+import { validate } from '../../middlewares/validate.js';
+import {
   createContestSchema,
   updateContestSchema,
   addProblemToContestSchema,
   updateContestStatusSchema,
   getContestsSchema,
-} = require('../../validation/contest');
+} from '../../validation/contest.js';
+
+const router = express.Router();
 
 // Apply authentication and admin middleware to all routes
 router.use(authenticateJWT);
@@ -42,4 +43,4 @@ router.get('/:contestId/leaderboard', contestController.getLeaderboard);
 // Contest Clone
 router.post('/:contestId/clone', contestController.cloneContest);
 
-module.exports = router;
+export default router;

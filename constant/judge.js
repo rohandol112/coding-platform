@@ -84,7 +84,7 @@ const RATE_LIMITS = {
   SUBMISSIONS_PER_HOUR: 100,
 };
 
-module.exports = {
+export {
   JUDGE0_LANGUAGES,
   JUDGE0_STATUS,
   EXECUTION_LIMITS,

@@ -1,9 +1,9 @@
 import express from 'express';
-import { authenticateJWT } from '../../../middlewares/authenticateJWT.js';
-import { isAdmin } from '../../../middlewares/isAdmin.js';
-import { validate } from '../../../middlewares/validate.js';
-import analyticsController from '../../../controllers/dashboard/analytics.controller.js';
-import { getSubmissionStatsSchema } from '../../../validation/dashboard/analyticsValidation.js';
+import { authenticateJWT } from '../../middlewares/auth.js';
+import { isAdmin } from '../../middlewares/isAdmin.js';
+import { validate } from '../../middlewares/validate.js';
+import analyticsController from '../../controllers/dashboard/analytics.controller.js';
+import { getSubmissionStatsSchema } from '../../validation/dashboard/analyticsValidation.js';
 
 const router = express.Router();
 

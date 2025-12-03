@@ -2,7 +2,7 @@
  * @fileoverview Joi validation schemas for submission endpoints
  */
 
-const Joi = require('joi');
+import Joi from 'joi';
 
 /** @typedef {import('../types/submissions').CreateSubmissionRequest} CreateSubmissionRequest */
 
@@ -62,7 +62,7 @@ const getSubmissionSchema = Joi.object({
     }),
 });
 
-module.exports = {
+export {
   createSubmissionSchema,
   getSubmissionSchema,
 };

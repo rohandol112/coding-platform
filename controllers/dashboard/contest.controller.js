@@ -3,8 +3,8 @@
  * HTTP request handlers for contest management
  */
 
-const contestService = require('../../services/dashboard/contest.service');
-const { contestMessages } = require('../../constant/contest');
+import contestService from '../../services/dashboard/contest.service.js';
+import { contestMessages } from '../../constant/contest.js';
 
 /**
  * Create contest
@@ -262,7 +262,7 @@ const cloneContest = async (req, res) => {
   }
 };
 
-module.exports = {
+export default {
   createContest,
   updateContest,
   deleteContest,

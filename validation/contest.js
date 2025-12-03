@@ -2,8 +2,8 @@
  * Contest Validation Schemas
  */
 
-const Joi = require('joi');
-const { contestType, contestStatus, contestLimits, contestMessages } = require('../constant/contest');
+import Joi from 'joi';
+import { contestType, contestStatus, contestLimits, contestMessages } from '../constant/contest.js';
 
 // Create Contest Schema
 const createContestSchema = Joi.object({
@@ -251,7 +251,7 @@ const getContestsSchema = Joi.object({
   sortOrder: Joi.string().valid('asc', 'desc').default('desc'),
 });
 
-module.exports = {
+export {
   createContestSchema,
   updateContestSchema,
   addProblemToContestSchema,

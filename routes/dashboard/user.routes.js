@@ -1,13 +1,13 @@
 import express from 'express';
-import { authenticateJWT } from '../../../middlewares/authenticateJWT.js';
-import { isAdmin } from '../../../middlewares/isAdmin.js';
-import { validate } from '../../../middlewares/validate.js';
-import userController from '../../../controllers/dashboard/user.controller.js';
+import { authenticateJWT } from '../../middlewares/auth.js';
+import { isAdmin } from '../../middlewares/isAdmin.js';
+import { validate } from '../../middlewares/validate.js';
+import userController from '../../controllers/dashboard/user.controller.js';
 import {
   getUsersSchema,
   updateUserSchema,
   updateUserRoleSchema
-} from '../../../validation/dashboard/userValidation.js';
+} from '../../validation/dashboard/userValidation.js';
 
 const router = express.Router();
 

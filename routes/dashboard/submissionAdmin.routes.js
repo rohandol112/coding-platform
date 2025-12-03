@@ -1,9 +1,9 @@
 import express from 'express';
-import { authenticateJWT } from '../../../middlewares/authenticateJWT.js';
-import { isAdmin } from '../../../middlewares/isAdmin.js';
-import { validate } from '../../../middlewares/validate.js';
-import submissionAdminController from '../../../controllers/dashboard/submissionAdmin.controller.js';
-import { getSubmissionsSchema } from '../../../validation/dashboard/submissionAdminValidation.js';
+import { authenticateJWT } from '../../middlewares/auth.js';
+import { isAdmin } from '../../middlewares/isAdmin.js';
+import { validate } from '../../middlewares/validate.js';
+import submissionAdminController from '../../controllers/dashboard/submissionAdmin.controller.js';
+import { getSubmissionsSchema } from '../../validation/dashboard/submissionAdminValidation.js';
 
 const router = express.Router();
 

@@ -86,7 +86,7 @@ const problemMessages = {
   fetchTestCasesFailed: 'Failed to get test cases',
 };
 
-module.exports = {
+export {
   problemDifficulty,
   problemLimits,
   testCaseLimits,

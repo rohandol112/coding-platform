@@ -85,7 +85,7 @@ const contestMessages = {
   fetchLeaderboardFailed: 'Failed to get leaderboard',
 };
 
-module.exports = {
+export {
   contestStatus,
   contestType,
   contestLimits,

@@ -2,7 +2,7 @@
  * @fileoverview Authentication middleware
  */
 
-const jwt = require('jsonwebtoken');
+import jwt from 'jsonwebtoken';
 
 /**
  * Middleware to authenticate JWT token
@@ -47,4 +47,4 @@ function authenticateJWT(req, res, next) {
   }
 }
 
-module.exports = { authenticateJWT };
+export { authenticateJWT };

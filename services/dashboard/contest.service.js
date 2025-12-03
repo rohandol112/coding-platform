@@ -3,32 +3,20 @@
  * Thin wrapper that delegates to domain use cases
  */
 
-const {
-  CreateContestUseCase,
-  UpdateContestUseCase,
-  DeleteContestUseCase,
-  GetContestUseCase,
-  GetContestsUseCase,
-  AddProblemToContestUseCase,
-  RemoveProblemFromContestUseCase,
-  UpdateContestStatusUseCase,
-  GetContestParticipantsUseCase,
-  GetContestLeaderboardUseCase,
+import {
+  createContestUseCase,
+  updateContestUseCase,
+  deleteContestUseCase,
+  getContestUseCase,
+  getContestsUseCase,
+  addProblemToContestUseCase,
+  removeProblemFromContestUseCase,
+  updateContestStatusUseCase,
+  getContestParticipantsUseCase,
+  getContestLeaderboardUseCase,
   cloneContestUseCase,
-} = require('../../library/domain/contest/contestUseCase');
-const kafkaService = require('../messaging/kafkaService');
-
-// Initialize use cases with dependencies
-const createContestUseCase = new CreateContestUseCase({ eventPublisher: kafkaService });
-const updateContestUseCase = new UpdateContestUseCase();
-const deleteContestUseCase = new DeleteContestUseCase();
-const getContestUseCase = new GetContestUseCase();
-const getContestsUseCase = new GetContestsUseCase();
-const addProblemToContestUseCase = new AddProblemToContestUseCase();
-const removeProblemFromContestUseCase = new RemoveProblemFromContestUseCase();
-const updateContestStatusUseCase = new UpdateContestStatusUseCase({ eventPublisher: kafkaService });
-const getContestParticipantsUseCase = new GetContestParticipantsUseCase();
-const getContestLeaderboardUseCase = new GetContestLeaderboardUseCase();
+} from '../../library/domain/contest/contestUseCase.js';
+import kafkaService from '../messaging/kafkaService.js';
 
 /**
  * Create a new contest (delegates to use case)
@@ -107,7 +95,7 @@ const cloneContest = async (contestId, newSlug, newTitle, userId) => {
   return await cloneContestUseCase.execute(contestId, newSlug, newTitle, userId);
 };
 
-module.exports = {
+export default {
   createContest,
   updateContest,
   deleteContest,

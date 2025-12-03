@@ -3,7 +3,7 @@
  * Contains only database operations, no business logic
  */
 
-const prismaClient = require('../../database/prismaClient');
+import prismaClient from '../../database/prismaClient.js';
 
 /**
  * Create a new problem
@@ -241,6 +241,23 @@ async function countTestCases(problemId) {
 }
 
 module.exports = {
+  create,
+  findById,
+  findBySlug,
+  findMany,
+  update,
+  deleteById,
+  slugExists,
+  isUsedInContest,
+  createTestCase,
+  findTestCaseById,
+  getTestCases,
+  updateTestCase,
+  deleteTestCase,
+  countTestCases,
+};
+
+export default {
   create,
   findById,
   findBySlug,

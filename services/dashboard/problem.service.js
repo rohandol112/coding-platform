@@ -3,29 +3,18 @@
  * Thin wrapper that delegates to domain use cases
  */
 
-const {
-  CreateProblemUseCase,
-  UpdateProblemUseCase,
-  DeleteProblemUseCase,
-  GetProblemUseCase,
-  GetProblemsUseCase,
-  AddTestCaseUseCase,
-  UpdateTestCaseUseCase,
-  DeleteTestCaseUseCase,
-  GetTestCasesUseCase,
-} = require('../../library/domain/problem/problemUseCase');
-const kafkaService = require('../messaging/kafkaService');
-
-// Initialize use cases with dependencies
-const createProblemUseCase = new CreateProblemUseCase({ eventPublisher: kafkaService });
-const updateProblemUseCase = new UpdateProblemUseCase();
-const deleteProblemUseCase = new DeleteProblemUseCase();
-const getProblemUseCase = new GetProblemUseCase();
-const getProblemsUseCase = new GetProblemsUseCase();
-const addTestCaseUseCase = new AddTestCaseUseCase();
-const updateTestCaseUseCase = new UpdateTestCaseUseCase();
-const deleteTestCaseUseCase = new DeleteTestCaseUseCase();
-const getTestCasesUseCase = new GetTestCasesUseCase();
+import {
+  createProblemUseCase,
+  updateProblemUseCase,
+  deleteProblemUseCase,
+  getProblemUseCase,
+  getProblemsUseCase,
+  addTestCaseUseCase,
+  updateTestCaseUseCase,
+  deleteTestCaseUseCase,
+  getTestCasesUseCase,
+} from '../../library/domain/problem/problemUseCase.js';
+import kafkaService from '../messaging/kafkaService.js';
 
 /**
  * Create a new problem (delegates to use case)
@@ -90,7 +79,7 @@ const getTestCases = async (problemId, includeHidden = true) => {
   return await getTestCasesUseCase.execute(problemId, includeHidden);
 };
 
-module.exports = {
+export default {
   createProblem,
   updateProblem,
   deleteProblem,

@@ -3,9 +3,9 @@
  * Core domain logic for problem operations
  */
 
-const { v4: uuidv4 } = require('uuid');
-const problemRepository = require('./problemRepository');
-const { problemMessages, problemLimits, testCaseLimits } = require('../../../constant/problem');
+import { v4 as uuidv4 } from 'uuid';
+import problemRepository from './problemRepository.js';
+import { problemMessages, problemLimits, testCaseLimits } from '../../../constant/problem.js';
 
 /**
  * Create Problem Use Case
@@ -300,3 +300,14 @@ module.exports = {
   DeleteTestCaseUseCase,
   GetTestCasesUseCase,
 };
+
+// Export instantiated use cases
+export const createProblemUseCase = new CreateProblemUseCase();
+export const updateProblemUseCase = new UpdateProblemUseCase();
+export const deleteProblemUseCase = new DeleteProblemUseCase();
+export const getProblemUseCase = new GetProblemUseCase();
+export const getProblemsUseCase = new GetProblemsUseCase();
+export const addTestCaseUseCase = new AddTestCaseUseCase();
+export const updateTestCaseUseCase = new UpdateTestCaseUseCase();
+export const deleteTestCaseUseCase = new DeleteTestCaseUseCase();
+export const getTestCasesUseCase = new GetTestCasesUseCase();

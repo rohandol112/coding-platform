@@ -3,9 +3,9 @@
  * Core domain logic for contest operations
  */
 
-const { v4: uuidv4 } = require('uuid');
-const contestRepository = require('./contestRepository');
-const { contestStatus, contestMessages, contestLimits } = require('../../../constant/contest');
+import { v4 as uuidv4 } from 'uuid';
+import contestRepository from './contestRepository.js';
+import { contestStatus, contestMessages, contestLimits } from '../../../constant/contest.js';
 
 /**
  * Create Contest Use Case
@@ -215,8 +215,11 @@ class AddProblemToContestUseCase {
     return await contestRepository.addProblem(
       contestId,
       problemData.problemId,
-      problemData.orderIndex,
-      problemData.points
+      {
+        orderIndex: problemData.orderIndex,
+        points: problemData.points,
+        bonusPoints: problemData.bonusPoints
+      }
     );
   }
 }
@@ -365,7 +368,7 @@ class CloneContestUseCase {
     };
 
     const newContestId = uuidv4();
-    const newContest = await contestRepository.create({
+    await contestRepository.create({
       id: newContestId,
       ...newContestData
     });
@@ -387,16 +390,15 @@ class CloneContestUseCase {
 
 const cloneContestUseCase = new CloneContestUseCase();
 
-module.exports = {
-  CreateContestUseCase,
-  UpdateContestUseCase,
-  DeleteContestUseCase,
-  GetContestUseCase,
-  getContestsUseCase,
-  addProblemToContestUseCase,
-  removeProblemFromContestUseCase,
-  updateContestStatusUseCase,
-  getContestParticipantsUseCase,
-  getContestLeaderboardUseCase,
-  cloneContestUseCase
-};
+// Export instantiated use cases
+export const createContestUseCase = new CreateContestUseCase();
+export const updateContestUseCase = new UpdateContestUseCase();
+export const deleteContestUseCase = new DeleteContestUseCase();
+export const getContestUseCase = new GetContestUseCase();
+export const getContestsUseCase = new GetContestsUseCase();
+export const addProblemToContestUseCase = new AddProblemToContestUseCase();
+export const removeProblemFromContestUseCase = new RemoveProblemFromContestUseCase();
+export const updateContestStatusUseCase = new UpdateContestStatusUseCase();
+export const getContestParticipantsUseCase = new GetContestParticipantsUseCase();
+export const getContestLeaderboardUseCase = new GetContestLeaderboardUseCase();
+export { cloneContestUseCase };

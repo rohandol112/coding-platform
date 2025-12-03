@@ -3,7 +3,7 @@
  * Contains only database operations, no business logic
  */
 
-const prismaClient = require('../../database/prismaClient');
+import prismaClient from '../../database/prismaClient.js';
 
 /**
  * Create a new contest
@@ -152,17 +152,17 @@ async function deleteById(id) {
  * Add problem to contest
  * @param {string} contestId - Contest ID
  * @param {string} problemId - Problem ID
- * @param {number} orderIndex - Order in contest
- * @param {number} points - Points for solving
+ * @param {Object} problemData - Problem data (orderIndex, points, bonusPoints)
  * @returns {Promise<Object>} Contest problem relation
  */
-async function addProblem(contestId, problemId, orderIndex, points) {
+async function addProblem(contestId, problemId, problemData = {}) {
   return await prismaClient.contestProblem.create({
     data: {
       contestId,
       problemId,
-      orderIndex,
-      points,
+      orderIndex: problemData.orderIndex,
+      points: problemData.points,
+      bonusPoints: problemData.bonusPoints,
     },
   });
 }
@@ -284,6 +284,20 @@ async function slugExists(slug, excludeId = null) {
 module.exports = {
   create,
   findById,
+  findMany,
+  update,
+  deleteById,
+  addProblem,
+  removeProblem,
+  getParticipants,
+  getLeaderboard,
+  slugExists,
+};
+
+export default {
+  create,
+  findById,
+  findBySlug,
   findMany,
   update,
   deleteById,

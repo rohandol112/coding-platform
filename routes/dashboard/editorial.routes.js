@@ -1,14 +1,14 @@
 import express from 'express';
-import { authenticateJWT } from '../../../middlewares/authenticateJWT.js';
-import { isAdmin } from '../../../middlewares/isAdmin.js';
-import { validate } from '../../../middlewares/validate.js';
-import editorialController from '../../../controllers/dashboard/editorial.controller.js';
+import { authenticateJWT } from '../../middlewares/authenticateJWT.js';
+import { isAdmin } from '../../middlewares/isAdmin.js';
+import { validate } from '../../middlewares/validate.js';
+import editorialController from '../../controllers/dashboard/editorial.controller.js';
 import {
   createEditorialSchema,
   updateEditorialSchema,
   createHintSchema,
   updateHintSchema
-} from '../../../validation/dashboard/editorialValidation.js';
+} from '../../validation/dashboard/editorialValidation.js';
 
 const router = express.Router();
 

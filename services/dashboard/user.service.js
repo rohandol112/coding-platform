@@ -7,7 +7,6 @@ import {
   deactivateUserUseCase,
   deleteUserUseCase
 } from '../../library/domain/user/userUseCase.js';
-import { userMessages } from '../../constant/userMessages.js';
 
 class UserService {
   async getUsers(filters) {

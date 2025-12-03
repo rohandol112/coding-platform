@@ -101,12 +101,12 @@ const getProblem = async (req, res) => {
 const getProblems = async (req, res) => {
   try {
     const filters = {
-      page: parseInt(req.query.page) || 1,
-      limit: parseInt(req.query.limit) || 20,
+      page: parseInt(req.query.page, 10) || 1,
+      limit: Math.min(parseInt(req.query.limit, 10) || 20, 100),
       difficulty: req.query.difficulty,
       tags: req.query.tags,
       search: req.query.search,
-      isPublic: req.query.isPublic,
+      isPublic: req.query.isPublic === 'true' ? true : req.query.isPublic === 'false' ? false : undefined,
       sortBy: req.query.sortBy,
       sortOrder: req.query.sortOrder,
     };

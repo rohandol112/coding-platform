@@ -3,7 +3,7 @@
  * Single source of truth for database access
  */
 
-const { PrismaClient } = require('@prisma/client');
+import { PrismaClient } from '@prisma/client';
 
 /**
  * Prisma client singleton
@@ -39,4 +39,4 @@ class DatabaseClient {
 
 // Export singleton instance
 const dbClient = new DatabaseClient();
-module.exports = dbClient.getClient();
+export default dbClient.getClient();

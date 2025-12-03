@@ -101,8 +101,8 @@ const getContest = async (req, res) => {
 const getContests = async (req, res) => {
   try {
     const filters = {
-      page: parseInt(req.query.page) || 1,
-      limit: parseInt(req.query.limit) || 20,
+      page: parseInt(req.query.page, 10) || 1,
+      limit: Math.min(parseInt(req.query.limit, 10) || 20, 100),
       status: req.query.status,
       type: req.query.type,
       search: req.query.search,
@@ -197,8 +197,8 @@ const updateStatus = async (req, res) => {
 const getParticipants = async (req, res) => {
   try {
     const { contestId } = req.params;
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 50;
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = Math.min(parseInt(req.query.limit, 10) || 50, 100);
     const participants = await contestService.getContestParticipants(contestId, page, limit);
 
     res.status(200).json({
@@ -220,8 +220,8 @@ const getParticipants = async (req, res) => {
 const getLeaderboard = async (req, res) => {
   try {
     const { contestId } = req.params;
-    const page = parseInt(req.query.page) || 1;
-    const limit = parseInt(req.query.limit) || 100;
+    const page = parseInt(req.query.page, 10) || 1;
+    const limit = Math.min(parseInt(req.query.limit, 10) || 100, 200);
     const leaderboard = await contestService.getContestLeaderboard(contestId, page, limit);
 
     res.status(200).json({
@@ -231,6 +231,31 @@ const getLeaderboard = async (req, res) => {
   } catch (error) {
     console.error('Get leaderboard controller error:', error);
     res.status(500).json({
+      success: false,
+      message: error.message,
+    });
+  }
+};
+
+/**
+ * Clone contest
+ */
+const cloneContest = async (req, res) => {
+  try {
+    const { contestId } = req.params;
+    const { slug, title } = req.body;
+    const userId = req.user.id;
+
+    const clonedContest = await contestService.cloneContest(contestId, slug, title, userId);
+
+    res.status(201).json({
+      success: true,
+      message: 'Contest cloned successfully',
+      data: clonedContest,
+    });
+  } catch (error) {
+    console.error('Clone contest controller error:', error);
+    res.status(error.statusCode || 500).json({
       success: false,
       message: error.message,
     });
@@ -248,4 +273,5 @@ module.exports = {
   updateStatus,
   getParticipants,
   getLeaderboard,
+  cloneContest,
 };

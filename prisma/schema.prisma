@@ -65,6 +65,7 @@ model Problem {
   submissions     Submission[]
   testCases       TestCase[]
   contestProblems ContestProblem[]
+  editorials      Editorial[]
 
   @@index([slug])
   @@index([difficulty])
@@ -201,6 +202,46 @@ model ContestParticipant {
   @@index([score])
   @@index([rank])
   @@map("contest_participants")
+}
+
+model Editorial {
+  id              String    @id @default(uuid())
+  problemId       String    @unique
+  title           String
+  content         String    @db.Text
+  approach        String?   @db.Text
+  complexity      String?   // e.g., "Time: O(n log n), Space: O(n)"
+  codeExamples    Json?     // [{ language, code, explanation }]
+  relatedTopics   String[]  @default([])
+  createdBy       String?
+  isPublished     Boolean   @default(false)
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  problem         Problem   @relation(fields: [problemId], references: [id], onDelete: Cascade)
+  hints           Hint[]
+
+  @@index([problemId])
+  @@index([isPublished])
+  @@map("editorials")
+}
+
+model Hint {
+  id              String    @id @default(uuid())
+  editorialId     String
+  content         String    @db.Text
+  orderIndex      Int       @default(1) // 1-5
+  penalty         Int       @default(0) // Points deducted for viewing
+  createdAt       DateTime  @default(now())
+  updatedAt       DateTime  @updatedAt
+
+  // Relations
+  editorial       Editorial @relation(fields: [editorialId], references: [id], onDelete: Cascade)
+
+  @@index([editorialId])
+  @@index([orderIndex])
+  @@map("hints")
 }
 
 enum AuthProvider {

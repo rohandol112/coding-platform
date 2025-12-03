@@ -96,3 +96,6 @@ export const libraryMessages = {
   otpSendError: 'Failed to send OTP',
   otpVerifyError: 'Failed to verify OTP'
 };
+
+// Re-export user management messages
+export * from './userMessages.js';

@@ -2,17 +2,28 @@ import express from 'express';
 import cors from 'cors';
 import dotenv from 'dotenv';
 import { PrismaClient } from '@prisma/client';
+
+// Dashboard (Admin) Routes
 import dashboardJwtAuthRoutes from './routes/dashboard/auth/jwt/jwtAuthRoutes.js';
-import portalJwtAuthRoutes from './routes/portal/auth/jwt/jwtAuthRoutes.js';
 import dashboardGoogleAuthRoutes from './routes/dashboard/auth/google/googleAuthRoutes.js';
-import portalGoogleAuthRoutes from './routes/portal/auth/google/googleAuthRoutes.js';
-import portalPhoneAuthRoutes from './routes/portal/auth/phone/phoneAuthRoutes.js';
 import dashboardContestRoutes from './routes/dashboard/contest.routes.js';
 import dashboardProblemRoutes from './routes/dashboard/problem.routes.js';
 import dashboardUserRoutes from './routes/dashboard/user.routes.js';
 import dashboardAnalyticsRoutes from './routes/dashboard/analytics.routes.js';
 import dashboardSubmissionRoutes from './routes/dashboard/submissionAdmin.routes.js';
 import dashboardEditorialRoutes from './routes/dashboard/editorial.routes.js';
+
+// Portal (User) Routes
+import portalJwtAuthRoutes from './routes/portal/auth/jwt/jwtAuthRoutes.js';
+import portalGoogleAuthRoutes from './routes/portal/auth/google/googleAuthRoutes.js';
+import portalPhoneAuthRoutes from './routes/portal/auth/phone/phoneAuthRoutes.js';
+import portalProblemRoutes from './routes/portal/problem.routes.js';
+import portalContestRoutes from './routes/portal/contest.routes.js';
+import portalSubmissionRoutes from './routes/portal/submission.routes.js';
+import portalUserRoutes from './routes/portal/user.routes.js';
+import portalLeaderboardRoutes from './routes/portal/leaderboard.routes.js';
+import portalEditorialRoutes from './routes/portal/editorial.routes.js';
+
 import { serverMessages } from './constant/messages.js';
 
 dotenv.config();
@@ -51,6 +62,12 @@ app.use('/api/dashboard/editorials', dashboardEditorialRoutes);
 app.use('/api/portal/auth/jwt', portalJwtAuthRoutes);
 app.use('/api/portal/auth/google', portalGoogleAuthRoutes);
 app.use('/api/portal/auth/phone', portalPhoneAuthRoutes);
+app.use('/api/portal/problems', portalProblemRoutes);
+app.use('/api/portal/contests', portalContestRoutes);
+app.use('/api/portal/submissions', portalSubmissionRoutes);
+app.use('/api/portal/users', portalUserRoutes);
+app.use('/api/portal/leaderboard', portalLeaderboardRoutes);
+app.use('/api/portal/editorials', portalEditorialRoutes);
 
 // 404 handler
 app.use((req, res) => {

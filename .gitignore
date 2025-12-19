@@ -106,3 +106,5 @@ turbo-output/
 .cache/
 .webstorm/
 .idea/
+.md 
+*.markdown

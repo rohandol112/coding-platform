@@ -3,10 +3,14 @@
  * Thin layer that delegates to domain use cases
  */
 
-const { CreateSubmissionUseCase, GetSubmissionUseCase, GetUserSubmissionsUseCase } = require('../../../library/domain/submission/submissionUseCase');
-const redisService = require('../../cache/redisService');
-const rabbitmqService = require('../../messaging/rabbitmqService');
-const kafkaService = require('../../messaging/kafkaService');
+import {
+  CreateSubmissionUseCase,
+  GetSubmissionUseCase,
+  GetUserSubmissionsUseCase,
+} from '../../../library/domain/submission/submissionUseCase.js';
+import redisService from '../../cache/redisService.js';
+import rabbitmqService from '../../messaging/rabbitmqService.js';
+import kafkaService from '../../messaging/kafkaService.js';
 
 /** @typedef {import('../../../types/submissions').CreateSubmissionRequest} CreateSubmissionRequest */
 /** @typedef {import('../../../types/submissions').CreateSubmissionResponse} CreateSubmissionResponse */
@@ -58,7 +62,13 @@ async function getUserSubmissions(userId, options) {
   return await getUserSubmissionsUseCase.execute(userId, options);
 }
 
-module.exports = {
+export default {
+  createSubmission,
+  getSubmissionById,
+  getUserSubmissions,
+};
+
+export {
   createSubmission,
   getSubmissionById,
   getUserSubmissions,

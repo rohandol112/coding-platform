@@ -16,9 +16,7 @@ import {
   createSubmission,
   getSubmission,
   getMySubmissions,
-  getProblemSubmissions,
   getSubmissionStats,
-  getBestSubmission,
   runCode,
 } from '../../controllers/portal/submission/submissionController.js';
 

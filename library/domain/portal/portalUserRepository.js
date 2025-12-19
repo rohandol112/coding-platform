@@ -134,9 +134,46 @@ async function getGlobalLeaderboard({ page = 1, limit = 50, timeframe = 'ALL_TIM
     };
   }
 
-  // Get users with problem solve counts
-  const users = await prismaClient.user.findMany({
+  // Get all distinct accepted submissions with problem difficulty in a single query (fixes N+1)
+  const acceptedSubmissions = await prismaClient.submission.findMany({
     where: {
+      status: 'ACCEPTED',
+      ...dateFilter,
+      user: {
+        isActive: true,
+        role: 'USER',
+      },
+    },
+    distinct: ['userId', 'problemId'],
+    select: {
+      userId: true,
+      problem: {
+        select: {
+          difficulty: true,
+        },
+      },
+    },
+  });
+
+  // Build user scores map from submissions
+  const userScoresMap = new Map();
+  for (const submission of acceptedSubmissions) {
+    const { userId, problem } = submission;
+    if (!userScoresMap.has(userId)) {
+      userScoresMap.set(userId, { userId, totalScore: 0, problemsSolved: 0 });
+    }
+    const entry = userScoresMap.get(userId);
+    entry.problemsSolved += 1;
+    if (problem?.difficulty === 'EASY') entry.totalScore += 100;
+    else if (problem?.difficulty === 'MEDIUM') entry.totalScore += 200;
+    else if (problem?.difficulty === 'HARD') entry.totalScore += 300;
+  }
+
+  // Get user details for users with scores
+  const userIdsWithScores = Array.from(userScoresMap.keys());
+  const usersWithDetails = await prismaClient.user.findMany({
+    where: {
+      id: { in: userIdsWithScores },
       isActive: true,
       role: 'USER',
     },
@@ -154,47 +191,22 @@ async function getGlobalLeaderboard({ page = 1, limit = 50, timeframe = 'ALL_TIM
     },
   });
 
-  // Calculate scores for each user
-  const userScores = await Promise.all(
-    users.map(async (user) => {
-      const solvedProblems = await prismaClient.submission.findMany({
-        where: {
-          userId: user.id,
-          status: 'ACCEPTED',
-          ...dateFilter,
-        },
-        distinct: ['problemId'],
-        include: {
-          problem: {
-            select: {
-              difficulty: true,
-            },
-          },
-        },
-      });
-
-      // Calculate score based on difficulty (EASY=1, MEDIUM=2, HARD=3)
-      let totalScore = 0;
-      solvedProblems.forEach(s => {
-        if (s.problem.difficulty === 'EASY') totalScore += 100;
-        else if (s.problem.difficulty === 'MEDIUM') totalScore += 200;
-        else if (s.problem.difficulty === 'HARD') totalScore += 300;
-      });
-
-      return {
-        user: {
-          id: user.id,
-          username: user.username,
-          firstName: user.firstName,
-          lastName: user.lastName,
-          avatar: user.avatar,
-        },
-        problemsSolved: solvedProblems.length,
-        totalScore,
-        contestsParticipated: user._count.contestParticipations,
-      };
-    })
-  );
+  // Combine user details with scores
+  const userScores = usersWithDetails.map((user) => {
+    const scoreData = userScoresMap.get(user.id) || { totalScore: 0, problemsSolved: 0 };
+    return {
+      user: {
+        id: user.id,
+        username: user.username,
+        firstName: user.firstName,
+        lastName: user.lastName,
+        avatar: user.avatar,
+      },
+      problemsSolved: scoreData.problemsSolved,
+      totalScore: scoreData.totalScore,
+      contestsParticipated: user._count.contestParticipations,
+    };
+  });
 
   // Sort by score and apply pagination
   userScores.sort((a, b) => b.totalScore - a.totalScore || b.problemsSolved - a.problemsSolved);
@@ -375,46 +387,90 @@ async function getActivityCalendar(userId, months = 12) {
  * @returns {Promise<Object>} Rank info
  */
 async function getUserRank(userId) {
-  // Get all users with their solved problems count
-  const users = await prismaClient.user.findMany({
+  // Get total active users count
+  const totalUsers = await prismaClient.user.count({
     where: { isActive: true, role: 'USER' },
-    select: { id: true },
   });
 
-  const userScores = await Promise.all(
-    users.map(async (user) => {
-      const solved = await prismaClient.submission.findMany({
-        where: { userId: user.id, status: 'ACCEPTED' },
-        distinct: ['problemId'],
-        include: {
-          problem: { select: { difficulty: true } },
+  if (totalUsers === 0) {
+    return {
+      globalRank: null,
+      totalUsers: 0,
+      score: 0,
+      problemsSolved: 0,
+      percentile: 0,
+    };
+  }
+
+  // Fetch all distinct accepted problems per active user in a single query (fixes N+1)
+  const acceptedSubmissions = await prismaClient.submission.findMany({
+    where: {
+      status: 'ACCEPTED',
+      user: {
+        isActive: true,
+        role: 'USER',
+      },
+    },
+    distinct: ['userId', 'problemId'],
+    select: {
+      userId: true,
+      problem: {
+        select: {
+          difficulty: true,
         },
-      });
+      },
+    },
+  });
 
-      let score = 0;
-      solved.forEach(s => {
-        if (s.problem.difficulty === 'EASY') score += 100;
-        else if (s.problem.difficulty === 'MEDIUM') score += 200;
-        else if (s.problem.difficulty === 'HARD') score += 300;
-      });
+  // Aggregate scores and problems solved per user
+  const scoreMap = new Map();
+  for (const submission of acceptedSubmissions) {
+    const { userId: uid, problem } = submission;
+    let entry = scoreMap.get(uid);
+    if (!entry) {
+      entry = { userId: uid, score: 0, problemsSolved: 0 };
+      scoreMap.set(uid, entry);
+    }
+    entry.problemsSolved += 1;
+    if (problem?.difficulty === 'EASY') entry.score += 100;
+    else if (problem?.difficulty === 'MEDIUM') entry.score += 200;
+    else if (problem?.difficulty === 'HARD') entry.score += 300;
+  }
 
-      return { userId: user.id, score, problemsSolved: solved.length };
-    })
-  );
-
+  const userScores = Array.from(scoreMap.values());
+  
+  // Sort by score desc, then problemsSolved desc
   userScores.sort((a, b) => b.score - a.score || b.problemsSolved - a.problemsSolved);
 
-  const userIndex = userScores.findIndex(u => u.userId === userId);
-  const userEntry = userScores[userIndex];
+  // Find the requested user's entry
+  let userIndex = userScores.findIndex((u) => u.userId === userId);
+  let userEntry = userIndex >= 0 ? userScores[userIndex] : null;
+
+  // If user has no solved problems but is an active USER, place them after all others
+  if (userIndex < 0) {
+    const activeUser = await prismaClient.user.findFirst({
+      where: { id: userId, isActive: true, role: 'USER' },
+      select: { id: true },
+    });
+    if (activeUser) {
+      userIndex = userScores.length;
+      userEntry = { userId, score: 0, problemsSolved: 0 };
+    }
+  }
+
+  const hasRank = userIndex >= 0;
+  const globalRank = hasRank ? userIndex + 1 : null;
+  const denominator = totalUsers || userScores.length || 1;
+  const percentile = hasRank
+    ? Math.round((1 - userIndex / denominator) * 100 * 10) / 10
+    : 0;
 
   return {
-    globalRank: userIndex >= 0 ? userIndex + 1 : null,
-    totalUsers: userScores.length,
+    globalRank,
+    totalUsers,
     score: userEntry?.score || 0,
     problemsSolved: userEntry?.problemsSolved || 0,
-    percentile: userIndex >= 0 
-      ? Math.round((1 - userIndex / userScores.length) * 100 * 10) / 10
-      : 0,
+    percentile,
   };
 }
 

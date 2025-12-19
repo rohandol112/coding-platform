@@ -58,6 +58,13 @@ export const contestMessages = {
   invalidStatus: 'Invalid contest status',
   invalidType: 'Invalid contest type',
   leaderboardLimitMax: 'Leaderboard limit cannot exceed 200',
+  // Pagination & Sort validation messages (contest-specific)
+  pageMinValue: 'Page must be at least 1',
+  limitMinValue: 'Limit must be at least 1',
+  limitMaxValue: 'Limit cannot exceed 100',
+  searchMaxLength: 'Contest search query cannot exceed 100 characters',
+  invalidSortBy: 'Invalid contest sort field',
+  invalidSortOrder: 'Sort order must be asc or desc',
 };
 
 // Submission Messages
@@ -91,6 +98,12 @@ export const submissionMessages = {
   submissionIdInvalid: 'Submission ID must be a valid UUID',
   invalidStatus: 'Invalid submission status',
   validationFailed: 'Validation failed',
+  // Pagination & Sort validation messages (submission-specific)
+  pageMinValue: 'Page must be at least 1',
+  limitMinValue: 'Limit must be at least 1',
+  limitMaxValue: 'Limit cannot exceed 100',
+  invalidSortBy: 'Invalid submission sort field',
+  invalidSortOrder: 'Sort order must be asc or desc',
 };
 
 // User Messages
@@ -117,6 +130,10 @@ export const userProfileMessages = {
   invalidTimeframe: 'Timeframe must be ALL_TIME, MONTHLY, or WEEKLY',
   monthsMinValue: 'Months must be at least 1',
   monthsMaxValue: 'Months cannot exceed 24',
+  // Pagination validation messages (leaderboard-specific)
+  pageMinValue: 'Page must be at least 1',
+  limitMinValue: 'Limit must be at least 1',
+  limitMaxValue: 'Leaderboard limit cannot exceed 100',
 };
 
 // Editorial Messages

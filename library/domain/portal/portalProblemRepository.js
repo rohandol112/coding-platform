@@ -66,30 +66,42 @@ async function findPublicProblems(filters = {}) {
     prismaClient.problem.count({ where }),
   ]);
 
-  // Calculate acceptance rate for each problem
-  const problemsWithStats = await Promise.all(
-    problems.map(async (problem) => {
-      const acceptedCount = await prismaClient.submission.count({
+  // Get accepted submission counts for all problems in a single aggregated query (fixes N+1)
+  const problemIds = problems.map((problem) => problem.id);
+  const acceptedCountsGrouped = problemIds.length
+    ? await prismaClient.submission.groupBy({
+        by: ['problemId'],
         where: {
-          problemId: problem.id,
+          problemId: { in: problemIds },
           status: 'ACCEPTED',
         },
-      });
-      
-      const totalSubmissions = problem._count.submissions;
-      const acceptanceRate = totalSubmissions > 0 
-        ? Math.round((acceptedCount / totalSubmissions) * 100 * 10) / 10
-        : 0;
+        _count: {
+          _all: true,
+        },
+      })
+    : [];
 
-      return {
-        ...problem,
-        totalSubmissions,
-        acceptedCount,
-        acceptanceRate,
-        _count: undefined,
-      };
-    })
+  // Create a map for quick lookup
+  const acceptedCountMap = new Map(
+    acceptedCountsGrouped.map((row) => [row.problemId, row._count._all])
   );
+
+  // Calculate acceptance rate for each problem
+  const problemsWithStats = problems.map((problem) => {
+    const acceptedCount = acceptedCountMap.get(problem.id) || 0;
+    const totalSubmissions = problem._count.submissions;
+    const acceptanceRate = totalSubmissions > 0
+      ? Math.round((acceptedCount / totalSubmissions) * 100 * 10) / 10
+      : 0;
+
+    return {
+      ...problem,
+      totalSubmissions,
+      acceptedCount,
+      acceptanceRate,
+      _count: undefined,
+    };
+  });
 
   return {
     problems: problemsWithStats,

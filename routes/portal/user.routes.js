@@ -8,13 +8,11 @@ import { authenticateJWT } from '../../middlewares/auth.js';
 import { validate } from '../../middlewares/validate.js';
 import {
   getUserByUsernameSchema,
-  globalLeaderboardSchema,
   updateProfileSchema,
   activityCalendarSchema,
 } from '../../validation/portalValidation.js';
 import {
   getPublicProfile,
-  getGlobalLeaderboard,
   getCurrentUserProfile,
   updateProfile,
   getActivityCalendar,

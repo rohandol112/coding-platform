@@ -311,17 +311,32 @@ async function getContestLeaderboard(contestId, { page = 1, limit = 100 } = {}) 
     lastSubmissionAt: p.lastSubmissionAt,
   }));
 
-  // Get problems solved count for each participant
-  for (const entry of leaderboard) {
-    const solvedCount = await prismaClient.submission.count({
+  // Get problems solved count for each participant in a single query (fixes N+1)
+  const userIds = leaderboard.map((entry) => entry.user.id);
+  if (userIds.length > 0) {
+    const solvedSubmissions = await prismaClient.submission.findMany({
       where: {
-        userId: entry.user.id,
         contestId,
         status: 'ACCEPTED',
+        userId: { in: userIds },
       },
-      distinct: ['problemId'],
+      distinct: ['userId', 'problemId'],
+      select: {
+        userId: true,
+      },
     });
-    entry.problemsSolved = solvedCount;
+    
+    // Count solved problems per user
+    const solvedCountsByUser = new Map();
+    for (const submission of solvedSubmissions) {
+      const current = solvedCountsByUser.get(submission.userId) || 0;
+      solvedCountsByUser.set(submission.userId, current + 1);
+    }
+    
+    // Apply counts to leaderboard entries
+    for (const entry of leaderboard) {
+      entry.problemsSolved = solvedCountsByUser.get(entry.user.id) || 0;
+    }
   }
 
   return {

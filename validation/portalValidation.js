@@ -59,11 +59,11 @@ const getProblemBySlugSchema = Joi.object({
  */
 const getContestListSchema = Joi.object({
   page: Joi.number().integer().min(1).default(1).messages({
-    'number.min': problemMessages.pageMinValue,
+    'number.min': contestMessages.pageMinValue,
   }),
   limit: Joi.number().integer().min(1).max(100).default(20).messages({
-    'number.min': problemMessages.limitMinValue,
-    'number.max': problemMessages.limitMaxValue,
+    'number.min': contestMessages.limitMinValue,
+    'number.max': contestMessages.limitMaxValue,
   }),
   status: Joi.string().valid('DRAFT', 'SCHEDULED', 'RUNNING', 'ENDED', 'CANCELLED').messages({
     'any.only': contestMessages.invalidStatus,
@@ -72,13 +72,13 @@ const getContestListSchema = Joi.object({
     'any.only': contestMessages.invalidType,
   }),
   search: Joi.string().max(100).messages({
-    'string.max': problemMessages.searchMaxLength,
+    'string.max': contestMessages.searchMaxLength,
   }),
   sortBy: Joi.string().valid('startTime', 'endTime', 'createdAt', 'title').default('startTime').messages({
-    'any.only': problemMessages.invalidSortBy,
+    'any.only': contestMessages.invalidSortBy,
   }),
   sortOrder: Joi.string().valid('asc', 'desc').default('desc').messages({
-    'any.only': problemMessages.invalidSortOrder,
+    'any.only': contestMessages.invalidSortOrder,
   }),
 });
 
@@ -106,10 +106,10 @@ const contestIdSchema = Joi.object({
  */
 const leaderboardQuerySchema = Joi.object({
   page: Joi.number().integer().min(1).default(1).messages({
-    'number.min': problemMessages.pageMinValue,
+    'number.min': contestMessages.pageMinValue,
   }),
   limit: Joi.number().integer().min(1).max(200).default(100).messages({
-    'number.min': problemMessages.limitMinValue,
+    'number.min': contestMessages.limitMinValue,
     'number.max': contestMessages.leaderboardLimitMax,
   }),
 });
@@ -172,11 +172,11 @@ const getSubmissionByIdSchema = Joi.object({
  */
 const getSubmissionListSchema = Joi.object({
   page: Joi.number().integer().min(1).default(1).messages({
-    'number.min': problemMessages.pageMinValue,
+    'number.min': submissionMessages.pageMinValue,
   }),
   limit: Joi.number().integer().min(1).max(100).default(20).messages({
-    'number.min': problemMessages.limitMinValue,
-    'number.max': problemMessages.limitMaxValue,
+    'number.min': submissionMessages.limitMinValue,
+    'number.max': submissionMessages.limitMaxValue,
   }),
   problemId: Joi.string().uuid().messages({
     'string.guid': submissionMessages.problemIdInvalid,
@@ -195,10 +195,10 @@ const getSubmissionListSchema = Joi.object({
     'any.only': submissionMessages.languageInvalid,
   }),
   sortBy: Joi.string().valid('createdAt', 'status', 'time', 'memory', 'score').default('createdAt').messages({
-    'any.only': problemMessages.invalidSortBy,
+    'any.only': submissionMessages.invalidSortBy,
   }),
   sortOrder: Joi.string().valid('asc', 'desc').default('desc').messages({
-    'any.only': problemMessages.invalidSortOrder,
+    'any.only': submissionMessages.invalidSortOrder,
   }),
 });
 
@@ -255,11 +255,11 @@ const getUserByUsernameSchema = Joi.object({
  */
 const globalLeaderboardSchema = Joi.object({
   page: Joi.number().integer().min(1).default(1).messages({
-    'number.min': problemMessages.pageMinValue,
+    'number.min': userProfileMessages.pageMinValue,
   }),
   limit: Joi.number().integer().min(1).max(100).default(50).messages({
-    'number.min': problemMessages.limitMinValue,
-    'number.max': problemMessages.limitMaxValue,
+    'number.min': userProfileMessages.limitMinValue,
+    'number.max': userProfileMessages.limitMaxValue,
   }),
   timeframe: Joi.string().valid('ALL_TIME', 'MONTHLY', 'WEEKLY').default('ALL_TIME').messages({
     'any.only': userProfileMessages.invalidTimeframe,

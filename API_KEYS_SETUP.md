@@ -17,10 +17,23 @@ JUDGE0_API_KEY=your-api-key-here
 JUDGE0_API_HOST=judge0-ce.p.rapidapi.com
 ```
 
-**Alternative: Self-Hosted Judge0**
+**Alternative: Self-Hosted Judge0 (Local)**
 ```env
-# Remove RapidAPI config above, use:
+# For local Docker deployment:
 JUDGE0_API_URL=http://localhost:2358
+```
+
+**Alternative: Render-Hosted Judge0 (Production)**
+```env
+# After deploying Judge0 on Render (see judge0-deploy/README.md):
+JUDGE0_API_URL=https://judge0-server-xxxx.onrender.com
+JUDGE0_API_KEY=your-authn-token-from-render
+
+# Deploy Judge0 on Render:
+# 1. cd judge0-deploy
+# 2. docker-compose up -d  (test locally first)
+# 3. Push to GitHub
+# 4. Render Dashboard → Blueprints → New → Select render.yaml
 ```
 
 ---

@@ -1,0 +1,14 @@
+# Judge0 Worker Dockerfile for Render
+# Handles code execution jobs
+
+FROM judge0/judge0:1.13.1
+
+# Set environment variables
+ENV RAILS_ENV=production
+ENV RAILS_LOG_TO_STDOUT=true
+
+# Worker doesn't need to expose ports
+# It pulls jobs from Redis queue
+
+# Start the worker
+CMD ["./scripts/workers"]

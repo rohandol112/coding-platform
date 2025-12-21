@@ -1,0 +1,99 @@
+# Judge0 Deployment Blueprint for Render
+# Uses EXTERNAL managed services for Redis & PostgreSQL
+# Deploy at: https://dashboard.render.com/blueprints
+
+# ============================================
+# BEFORE DEPLOYING: Set up these external services
+# ============================================
+# 1. PostgreSQL: Use Neon.tech (FREE) or Supabase (FREE)
+# 2. Redis: Use Upstash (FREE) or Redis Cloud (FREE 30MB)
+# ============================================
+
+services:
+  # Judge0 API Server
+  - type: web
+    name: judge0-server
+    runtime: docker
+    dockerfilePath: ./judge0-deploy/Dockerfile
+    dockerContext: ./judge0-deploy
+    plan: standard # Minimum recommended for Judge0
+    healthCheckPath: /health
+    envVars:
+      - key: JUDGE0_VERSION
+        value: "1.13.1"
+      - key: RAILS_ENV
+        value: production
+      - key: RAILS_MAX_THREADS
+        value: "5"
+      - key: SECRET_KEY_BASE
+        generateValue: true
+      # ========== EXTERNAL DATABASE (Neon/Supabase) ==========
+      - key: POSTGRES_HOST
+        sync: false # Set manually from Neon/Supabase
+      - key: POSTGRES_DB
+        value: judge0
+      - key: POSTGRES_USER
+        sync: false # Set manually
+      - key: POSTGRES_PASSWORD
+        sync: false # Set manually
+      - key: POSTGRES_PORT
+        value: "5432"
+      # ========== EXTERNAL REDIS (Upstash/Redis Cloud) ==========
+      - key: REDIS_HOST
+        sync: false # Set manually from Upstash
+      - key: REDIS_PORT
+        value: "6379"
+      - key: REDIS_PASSWORD
+        sync: false # Set manually
+      # ========== JUDGE0 CONFIG ==========
+      - key: ENABLE_WAIT_RESULT
+        value: "true"
+      - key: ENABLE_COMPILER_OPTIONS
+        value: "true"
+      - key: ALLOWED_ORIGINS
+        value: "*"
+      - key: AUTHN_HEADER
+        value: X-Auth-Token
+      - key: AUTHN_TOKEN
+        generateValue: true
+      - key: AUTHZ_HEADER
+        value: X-Auth-Token
+      - key: AUTHZ_TOKEN
+        generateValue: true
+
+  # Judge0 Workers (Background Job Processing)
+  - type: worker
+    name: judge0-workers
+    runtime: docker
+    dockerfilePath: ./judge0-deploy/Dockerfile.worker
+    dockerContext: ./judge0-deploy
+    plan: standard
+    envVars:
+      - key: JUDGE0_VERSION
+        value: "1.13.1"
+      - key: RAILS_ENV
+        value: production
+      - key: SECRET_KEY_BASE
+        fromService:
+          type: web
+          name: judge0-server
+          envVarKey: SECRET_KEY_BASE
+      # ========== EXTERNAL DATABASE ==========
+      - key: POSTGRES_HOST
+        sync: false
+      - key: POSTGRES_DB
+        value: judge0
+      - key: POSTGRES_USER
+        sync: false
+      - key: POSTGRES_PASSWORD
+        sync: false
+      - key: POSTGRES_PORT
+        value: "5432"
+      # ========== EXTERNAL REDIS ==========
+      - key: REDIS_HOST
+        sync: false
+      - key: REDIS_PORT
+        value: "6379"
+      - key: REDIS_PASSWORD
+        sync: false
+

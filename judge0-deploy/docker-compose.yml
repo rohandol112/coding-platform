@@ -1,0 +1,128 @@
+# Docker Compose for LOCAL TESTING before Render deployment
+# Usage: docker-compose up -d
+#
+# For production, use FREE external services:
+# - PostgreSQL: Neon.tech (FREE)
+# - Redis: Upstash (FREE)
+
+version: '3.8'
+
+services:
+  # Judge0 API Server
+  judge0-server:
+    image: judge0/judge0:1.13.1
+    container_name: judge0-server
+    ports:
+      - "2358:2358"
+    privileged: true
+    restart: unless-stopped
+    environment:
+      - RAILS_ENV=production
+      - RAILS_MAX_THREADS=5
+      - SECRET_KEY_BASE=your-secret-key-base-min-64-chars-here-generate-using-openssl
+      # ===== FOR LOCAL TESTING: Use local containers =====
+      - POSTGRES_HOST=judge0-db
+      - POSTGRES_DB=judge0
+      - POSTGRES_USER=judge0
+      - POSTGRES_PASSWORD=judge0password
+      - POSTGRES_PORT=5432
+      - REDIS_HOST=judge0-redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=judge0redis
+      # ===== FOR PRODUCTION: Use these instead =====
+      # - POSTGRES_HOST=ep-xxxx.us-east-2.aws.neon.tech  # From Neon
+      # - POSTGRES_USER=judge0_owner
+      # - POSTGRES_PASSWORD=your-neon-password
+      # - REDIS_HOST=xxxx.upstash.io  # From Upstash
+      # - REDIS_PASSWORD=your-upstash-password
+      # ================================================
+      - ENABLE_WAIT_RESULT=true
+      - ENABLE_COMPILER_OPTIONS=true
+      - ALLOWED_ORIGINS=*
+      - AUTHN_HEADER=X-Auth-Token
+      - AUTHN_TOKEN=your-auth-token-here
+      - AUTHZ_HEADER=X-Auth-Token
+      - AUTHZ_TOKEN=your-auth-token-here
+    depends_on:
+      judge0-db:
+        condition: service_healthy
+      judge0-redis:
+        condition: service_healthy
+    networks:
+      - judge0-network
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:2358/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+  # Judge0 Workers
+  judge0-workers:
+    image: judge0/judge0:1.13.1
+    container_name: judge0-workers
+    command: ["./scripts/workers"]
+    privileged: true
+    restart: unless-stopped
+    environment:
+      - RAILS_ENV=production
+      - SECRET_KEY_BASE=your-secret-key-base-min-64-chars-here-generate-using-openssl
+      - POSTGRES_HOST=judge0-db
+      - POSTGRES_DB=judge0
+      - POSTGRES_USER=judge0
+      - POSTGRES_PASSWORD=judge0password
+      - POSTGRES_PORT=5432
+      - REDIS_HOST=judge0-redis
+      - REDIS_PORT=6379
+      - REDIS_PASSWORD=judge0redis
+      - INTERVAL=0.1
+      - COUNT=2
+    depends_on:
+      - judge0-server
+    networks:
+      - judge0-network
+
+  # ===== LOCAL TESTING ONLY (Not needed for production) =====
+  # PostgreSQL Database (Use Neon.tech FREE in production)
+  judge0-db:
+    image: postgres:13-alpine
+    container_name: judge0-db
+    restart: unless-stopped
+    environment:
+      - POSTGRES_DB=judge0
+      - POSTGRES_USER=judge0
+      - POSTGRES_PASSWORD=judge0password
+    volumes:
+      - judge0-db-data:/var/lib/postgresql/data
+    networks:
+      - judge0-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U judge0 -d judge0"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 30s
+
+  # Redis Cache (Use Upstash FREE in production)
+  judge0-redis:
+    image: redis:7-alpine
+    container_name: judge0-redis
+    command: redis-server --requirepass judge0redis --appendonly yes
+    restart: unless-stopped
+    volumes:
+      - judge0-redis-data:/data
+    networks:
+      - judge0-network
+    healthcheck:
+      test: ["CMD", "redis-cli", "-a", "judge0redis", "ping"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+
+volumes:
+  judge0-db-data:
+  judge0-redis-data:
+
+networks:
+  judge0-network:
+    driver: bridge

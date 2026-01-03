@@ -3,13 +3,9 @@
 
 FROM judge0/judge0:1.13.1
 
-# Install supervisor to manage multiple processes
-USER root
-RUN apt-get update && apt-get install -y supervisor && rm -rf /var/lib/apt/lists/*
-
-# Create supervisor config
-RUN mkdir -p /var/log/supervisor
-COPY supervisord.conf /etc/supervisor/conf.d/supervisord.conf
+# Copy startup script
+COPY start-combined.sh /start-combined.sh
+RUN chmod +x /start-combined.sh
 
 # Set environment variables
 ENV RAILS_ENV=production
@@ -22,5 +18,5 @@ EXPOSE 2358
 HEALTHCHECK --interval=30s --timeout=10s --start-period=60s --retries=3 \
   CMD curl -f http://localhost:2358/health || exit 1
 
-# Start supervisor (manages both server and workers)
-CMD ["/usr/bin/supervisord", "-c", "/etc/supervisor/conf.d/supervisord.conf"]
+# Start both server and workers
+CMD ["/start-combined.sh"]

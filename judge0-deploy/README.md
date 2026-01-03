@@ -16,10 +16,14 @@
    Port: 5432
    ```
    
-   Full connection string:
+   ⚠️ **CRITICAL - Full DATABASE_URL with Neon-specific parameters:**
    ```
-   postgresql://neondb_owner:npg_SNc8AUDt4gap@ep-lively-dew-advg1w10-pooler.c-2.us-east-1.aws.neon.tech/neondb?sslmode=require
+   postgresql://neondb_owner:npg_SNc8AUDt4gap@ep-lively-dew-advg1w10-pooler.c-2.us-east-1.aws.neon.tech:5432/neondb?sslmode=require&options=endpoint%3Dep-lively-dew-advg1w10
    ```
+   
+   **Why the extra parameters?**
+   - `sslmode=require` - Neon requires SSL connections
+   - `options=endpoint%3Dep-lively-dew-advg1w10` - Old Judge0 PostgreSQL client needs endpoint ID for SNI support
 
 **Alternative PostgreSQL Options:**
 | Provider | Free Tier | Link |
@@ -43,16 +47,12 @@
    Password: AaSkAAIncDEyN2E2MjMyMDYxNzA0NDI0YWRjY2NkNWViMTg0ZjNiY3AxNDIxNDg
    ```
    
-   Full connection string:
+   ⚠️ **CRITICAL - REDIS_URL with TLS (note 'rediss://' with double 's'):**
    ```
-   redis://default:AaSkAAIncDEyN2E2MjMyMDYxNzA0NDI0YWRjY2NkNWViMTg0ZjNiY3AxNDIxNDg@powerful-serval-42148.upstash.io:6379
+   rediss://default:AaSkAAIncDEyN2E2MjMyMDYxNzA0NDI0YWRjY2NkNWViMTg0ZjNiY3AxNDIxNDg@powerful-serval-42148.upstash.io:6379
    ```
-
-   REST API (optional):
-   ```
-   UPSTASH_REDIS_REST_URL=https://powerful-serval-42148.upstash.io
-   UPSTASH_REDIS_REST_TOKEN=AaSkAAIncDEyN2E2MjMyMDYxNzA0NDI0YWRjY2NkNWViMTg0ZjNiY3AxNDIxNDg
-   ```
+   
+   **Why TLS?** Upstash requires encrypted connections. The `rediss://` protocol enables TLS/SSL.
 
 **Alternative Redis Options:**
 | Provider | Free Tier | Link |
@@ -94,19 +94,15 @@ git push origin main
 #### Step 4: Add Environment Variables
 Click **"Add Environment Variable"** for each:
 
+⚠️ **CRITICAL:** Use `DATABASE_URL` and `REDIS_URL` for proper TLS/SSL connections!
+
 | Key | Value |
 |-----|-------|
 | `RAILS_ENV` | `production` |
 | `RAILS_MAX_THREADS` | `5` |
 | `SECRET_KEY_BASE` | `<run: openssl rand -hex 32>` |
-| `POSTGRES_HOST` | `ep-lively-dew-advg1w10-pooler.c-2.us-east-1.aws.neon.tech` |
-| `POSTGRES_DB` | `neondb` |
-| `POSTGRES_USER` | `neondb_owner` |
-| `POSTGRES_PASSWORD` | `npg_SNc8AUDt4gap` |
-| `POSTGRES_PORT` | `5432` |
-| `REDIS_HOST` | `powerful-serval-42148.upstash.io` |
-| `REDIS_PORT` | `6379` |
-| `REDIS_PASSWORD` | `AaSkAAIncDEyN2E2MjMyMDYxNzA0NDI0YWRjY2NkNWViMTg0ZjNiY3AxNDIxNDg` |
+| `DATABASE_URL` | `postgresql://neondb_owner:npg_SNc8AUDt4gap@ep-lively-dew-advg1w10-pooler.c-2.us-east-1.aws.neon.tech:5432/neondb?sslmode=require&options=endpoint%3Dep-lively-dew-advg1w10` |
+| `REDIS_URL` | `rediss://default:AaSkAAIncDEyN2E2MjMyMDYxNzA0NDI0YWRjY2NkNWViMTg0ZjNiY3AxNDIxNDg@powerful-serval-42148.upstash.io:6379` |
 | `ENABLE_WAIT_RESULT` | `true` |
 | `ENABLE_COMPILER_OPTIONS` | `true` |
 | `ALLOWED_ORIGINS` | `*` |
@@ -118,9 +114,32 @@ Click **"Add Environment Variable"** for each:
 2. Wait 3-5 minutes for build & deployment
 3. Copy your URL: `https://judge0-server-xxxx.onrender.com`
 
+#### Step 6: Test API (Optional - Test before deploying workers)
+```bash
+# Health check
+curl https://judge0-server-xxxx.onrender.com/health
+
+# Get languages
+curl https://judge0-server-xxxx.onrender.com/languages
+```
+
 ---
 
 ### 👷 Deploy Workers via GitHub
+
+⚠️ **IMPORTANT:** Workers are **REQUIRED** for code execution!
+
+**When to deploy workers:**
+- ✅ **Now** - If you want to test code execution immediately
+- ⏳ **Later** - If you're just testing API endpoints first (submissions won't execute)
+- 🚀 **Production** - MUST have workers for your platform to work
+
+**Note:** Your Kafka/RabbitMQ handles YOUR microservice queue. Judge0 has its OWN internal queue (Redis) that needs Judge0 workers to process code execution.
+
+#### Architecture:
+```
+Your API → Kafka/RabbitMQ → Your Worker → Judge0 Server → Redis Queue → Judge0 Workers → Code Execution
+```
 
 #### Step 1: Create Background Worker
 1. Click **"New +"** → **"Background Worker"**
